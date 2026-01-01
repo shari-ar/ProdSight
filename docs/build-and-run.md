@@ -28,7 +28,7 @@ These versions are fixed and **must not be modified**:
 
 - `index.html` runs from disk without a server.
 - The Excel file is read from the configured path.
-- A refresh timer triggers a full reload at `AUTO_REFRESH_INTERVAL_MS`.
+- A refresh timer updates data at `AUTO_REFRESH_INTERVAL_MS`.
 
 ## Deployment
 
