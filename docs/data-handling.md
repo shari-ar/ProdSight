@@ -32,7 +32,7 @@ This document describes how Excel data is read, validated, normalized, and prese
 - The latest row is **visually dominant** with:
   - strong background highlight
   - thick border
-  - Persian badge `آخرین`
+  - Persian badge `واپَسین`
   - increased font weight
 
 ## Error Handling
@@ -40,7 +40,6 @@ This document describes how Excel data is read, validated, normalized, and prese
 If any of the following occurs, a Persian error state is shown and the table is hidden:
 
 - Missing or unreadable Excel file
-- Invalid configuration
 - Any row with an empty or unparseable Date
 
 See [UI & Localization](./ui-and-i18n.md) for display behavior details.
