@@ -51,7 +51,6 @@ project/
 ## Runtime Flow
 
 1. **Bootstrap (`app/boot.ts`)**
-   - Loads and validates `.env` config.
    - Initializes state and kicks off data load.
 2. **Excel Read (`data/excelReader.ts`)**
    - Loads the first worksheet.
@@ -67,7 +66,7 @@ project/
    - Renders header, status line, table, or error state.
 6. **Refresh (`app/refresh.ts`)**
    - Auto-refresh interval + manual refresh button.
-   - Full page reload and reinitialization each time.
+   - Auto-refresh updates data only; manual refresh triggers a full page reload.
 
 ## Build Output
 
