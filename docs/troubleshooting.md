@@ -23,7 +23,7 @@ This guide lists common issues and recommended resolutions.
 - Ensure consistent formats (`YYYY-MM-DD`, `DD/MM/YYYY`, `MM/DD/YYYY`)
 - Remove stray invisible characters or mixed separators
 
-## Auto Refresh Not Updating
+## Manual Refresh Not Updating
 
 **Symptoms**
 - No page reload
