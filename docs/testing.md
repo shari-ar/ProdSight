@@ -13,7 +13,6 @@ Location: `tests/`
 ## Suggested Validation Checklist
 
 - **Config validation** fails when any `.env` variable is missing.
-- **Excel file access** errors are surfaced in Persian.
 - **Date parsing** accepts known formats and rejects invalid rows.
 - **Pagination** respects `ROWS_PER_PAGE`.
 - **RTL layout** and Persian formatting match expectations.
