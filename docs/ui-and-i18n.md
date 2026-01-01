@@ -4,7 +4,7 @@ The UI is designed for Persian (Farsi) users with an elegant, corporate look and
 
 ## Language & Direction
 
-- **Language:** Persian (Farsi)
+- **Language:** Persian (پارسی)
 - **Layout direction:** `dir="rtl"`
 - **Dates:** Jalali (Shamsi) format
 - **Numbers:** Persian locale formatting (`fa-IR`)
@@ -24,12 +24,12 @@ The UI is designed for Persian (Farsi) users with an elegant, corporate look and
 ## Table Behavior
 
 - Responsive RTL table suitable for standard laptop resolution
-- Latest row is emphasized with highlight, thick border, and badge `آخرین`
+- Latest row is emphasized with highlight, thick border, and badge `واپَسین`
 - Unparseable or missing values show a Persian placeholder (e.g., `—`)
 
 ## Error State
 
-On critical failures (configuration, date parsing, or file access):
+On critical failures (date parsing or file access):
 
 - Render a clear Persian error card
 - Hide the data table completely
