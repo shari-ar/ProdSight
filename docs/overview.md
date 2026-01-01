@@ -1,6 +1,6 @@
 # Overview
 
-ProdSight is a **single-file offline HTML** application for monitoring factory production plans and outputs stored in an Excel file. It renders a professional, Persian (Farsi), RTL interface and refreshes data on a schedule or via a manual refresh button.
+ProdSight is a **single-file offline HTML** application for monitoring factory production plans and outputs stored in an Excel file. It renders a professional, Persian (پارسی), RTL interface and refreshes data on a schedule or via a manual refresh button.
 
 ## Goals
 
