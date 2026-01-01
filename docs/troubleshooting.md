@@ -13,16 +13,6 @@ This guide lists common issues and recommended resolutions.
 - Confirm file exists at the path on the target machine
 - Confirm file is not locked by another process
 
-## Invalid or Missing `.env`
-
-**Symptoms**
-- Persian error state displayed at startup
-- No further initialization
-
-**Checks**
-- Ensure all required variables are present and non‑empty
-- Confirm `ROWS_PER_PAGE` and `AUTO_REFRESH_INTERVAL_MS` are valid integers
-
 ## Date Parsing Errors
 
 **Symptoms**
@@ -36,19 +26,9 @@ This guide lists common issues and recommended resolutions.
 ## Auto Refresh Not Updating
 
 **Symptoms**
-- No periodic reload
+- No page reload
 
 **Checks**
-- Verify `AUTO_REFRESH_INTERVAL_MS` is set and valid
 - Ensure the environment allows page reloads
-
-## UI Appears LTR
-
-**Symptoms**
-- Table direction appears left-to-right
-
-**Checks**
-- Confirm `dir="rtl"` is set in the layout
-- Verify no custom CSS overrides `direction`
 
 For deeper details, refer to the [Architecture](./architecture.md) and [UI & Localization](./ui-and-i18n.md) pages.
