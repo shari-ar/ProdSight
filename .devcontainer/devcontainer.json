@@ -1,0 +1,16 @@
+{
+  "name": "ProdSight Dev",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "workspaceFolder": "/workspace/ProdSight",
+  "postCreateCommand": "bash .devcontainer/bootstrap.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  }
+}
