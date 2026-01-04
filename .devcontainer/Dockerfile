@@ -7,4 +7,4 @@ RUN apt-get update \
     curl \
   && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /workspace
+WORKDIR /workspaces
