@@ -12,6 +12,8 @@ This guide lists common issues and recommended resolutions.
 - Verify `EXCEL_FILE_PATH` is correct
 - Confirm file exists at the path on the target machine
 - Confirm file is not locked by another process
+- If the network share is temporarily unavailable, the app will continue retrying in the background and recover automatically
+- Use the manual “select file” fallback if the browser blocks direct access to the share
 
 ## Date Parsing Errors
 

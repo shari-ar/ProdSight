@@ -6,8 +6,8 @@ The UI is designed for Persian (Farsi) users with an elegant, corporate look and
 
 - **Language:** Persian (پارسی)
 - **Layout direction:** `dir="rtl"`
-- **Dates:** Jalali (Shamsi) format
-- **Numbers:** Persian locale formatting (`fa-IR`)
+- **Dates:** Jalali (Shamsi) format, **date-only** (no time)
+- **Numbers:** Persian locale formatting (`fa-IR`) with support for English/Persian/Arabic digits
 
 ## Page Header
 
@@ -18,8 +18,9 @@ The UI is designed for Persian (Farsi) users with an elegant, corporate look and
 ## Status Line
 
 - Shows last refresh time in Jalali format
-- Includes a **manual refresh button**
-- Auto refresh operates at `AUTO_REFRESH_INTERVAL_MS`
+- Includes a **manual refresh button** that is **disabled while a read is in progress**
+- Auto refresh operates at `AUTO_REFRESH_INTERVAL_MS` and re-reads only when the source file mtime changes
+- Provides a **manual “select file” fallback** when the configured path is unavailable
 
 ## Table Behavior
 
@@ -33,5 +34,6 @@ On critical failures (date parsing or file access):
 
 - Render a clear Persian error card
 - Hide the data table completely
+- If an automatic refresh fails (e.g., network share temporarily unavailable), show the error once and keep retrying silently until recovery
 
 See [Data Pipeline](./data-handling.md) for data rules and [Configuration](./configuration.md) for required values.

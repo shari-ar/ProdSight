@@ -32,7 +32,7 @@ project/
         tailwind.css     # Tailwind entry point
       components/
         Header.ts        # logo + title
-        StatusLine.ts    # refresh status (Jalali)
+        StatusLine.ts    # refresh status (Jalali) + manual actions
         DataTable.ts     # history + latest highlight
         ErrorCard.ts     # error state UI
 
@@ -65,8 +65,9 @@ project/
 5. **Render (`ui/render.ts`)**
    - Renders header, status line, table, or error state.
 6. **Refresh (`app/refresh.ts`)**
-   - Auto-refresh interval + manual refresh button.
-   - Auto-refresh updates data only; manual refresh triggers a full page reload.
+   - Auto-refresh interval + manual refresh button + manual file picker fallback.
+   - Auto-refresh updates data only when the Excel file mtime changes; manual refresh triggers a full page reload.
+   - On refresh failure, display a visible error once while retrying silently until recovery.
 
 ## Build Output
 
