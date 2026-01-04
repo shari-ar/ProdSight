@@ -20,8 +20,7 @@ markdown_extensions:
       permalink: true
 
 nav:
-  - Home: index.md
-  - Overview: overview.md
+  - Home: overview.md
   - Architecture: architecture.md
   - Configuration: configuration.md
   - Build & Packaging: build-and-run.md
