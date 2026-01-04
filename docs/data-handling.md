@@ -8,6 +8,7 @@ This document describes how Excel data is read, validated, normalized, and prese
 - **Header row** defines column names, read left-to-right.
 - **Column detection stops** at the first empty header cell.
 - Every row **must contain a Date value**.
+- The Date header is detected case-insensitively and in Persian/Arabic: `Date`, `date`, `تاریخ`, etc. (first header named Date/تاریخ).
 
 ## Row Normalization
 
@@ -16,13 +17,15 @@ This document describes how Excel data is read, validated, normalized, and prese
    - Remove invisible characters
 2. **Number parsing**
    - Remove thousand separators and spacing artifacts
-   - Format using Persian locale where possible
+   - Accept English, Persian, and Arabic numerals
 3. **Date parsing** (authoritative field)
    - Accepts multiple string formats:
      - `YYYY-MM-DD`
      - `DD/MM/YYYY`
      - `MM/DD/YYYY`
+   - Accepts English, Persian, and Arabic digits and separators
    - Handles Excel serial date values
+   - Normalizes to **date-only** (no time component)
    - Any unparseable or empty Date triggers a **global error state**
 
 ## Sorting & Pagination

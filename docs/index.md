@@ -19,7 +19,8 @@ Welcome to the ProdSight technical documentation. This documentation describes t
 - **Offline operation**: all assets and dependencies are embedded.
 - **RTL Persian UI**: `dir="rtl"`, Jalali dates, Persian number formatting.
 - **Excel source**: first worksheet only; header-driven column detection.
-- **Strict config validation**: all variables from `.env` required.
-- **Auto refresh**: interval and manual refresh supported.
+- **Strict config validation**: exactly five `.env` variables required; no extras allowed.
+- **Auto refresh**: interval with mtime detection, retry-on-failure, and manual refresh supported.
+- **Local `file://` usage**: index opened from disk/USB with Excel on local or network share.
 
 Start with [Overview](./overview.md) for a concise summary of the system.
