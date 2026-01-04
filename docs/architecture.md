@@ -46,6 +46,11 @@ project/
 
   scripts/
     pack-single-html.ts  # inline & bundle into one HTML
+
+  tests/
+    date.test.ts         # date parsing + Jalali conversion
+    excel.test.ts        # Excel read + header detection
+    sanitize.test.ts     # text + numeric normalization
 ```
 
 ## Runtime Flow
