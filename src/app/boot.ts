@@ -2,13 +2,16 @@ import { renderShell } from '../ui/render';
 import { appConfig } from '../config/runtime';
 import { loadExcelDataset } from '../data/excelReader';
 
+const LOG_PREFIX = '[ProdSight:Boot]';
+
 const loadInitialDataset = (): void => {
+  console.info(`${LOG_PREFIX} Starting initial Excel load.`);
   void loadExcelDataset(appConfig.excelFilePath)
     .then((dataset) => {
-      console.info('Excel dataset loaded', dataset);
+      console.info(`${LOG_PREFIX} Excel dataset loaded (${dataset.rows.length} rows).`);
     })
     .catch((error) => {
-      console.error('Failed to load Excel dataset', error);
+      console.error(`${LOG_PREFIX} Failed to load Excel dataset.`, error);
     });
 };
 

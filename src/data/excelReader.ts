@@ -4,6 +4,8 @@ import { parseDate } from './parsers/parseDate';
 import { parseNumber } from './parsers/parseNumber';
 import type { ExcelDataset, NormalizedCell, NormalizedRow } from './model';
 
+const LOG_PREFIX = '[ProdSight:Excel]';
+
 // Accepted header labels for locating the Date column (case-insensitive).
 const DATE_HEADER_ALIASES = new Set(['date', 'تاریخ', 'تاريخ']);
 
@@ -91,6 +93,7 @@ const parseWorksheet = (worksheet: XLSX.WorkSheet): ExcelDataset => {
 
   const headers = detectHeaders(rows[0] ?? []);
   const dateIndex = findDateColumnIndex(headers);
+  console.info(`${LOG_PREFIX} Detected ${headers.length} columns, date column index ${dateIndex}.`);
 
   const normalizedRows = rows
     .slice(1)
@@ -109,6 +112,7 @@ const parseWorksheet = (worksheet: XLSX.WorkSheet): ExcelDataset => {
  * Reads and parses an Excel file from a provided path.
  */
 export const loadExcelDataset = async (filePath: string): Promise<ExcelDataset> => {
+  console.info(`${LOG_PREFIX} Loading Excel file from ${filePath}.`);
   const response = await fetch(filePath);
 
   if (!response.ok) {
@@ -129,5 +133,9 @@ export const loadExcelDataset = async (filePath: string): Promise<ExcelDataset> 
     throw new Error('Excel worksheet could not be loaded.');
   }
 
-  return parseWorksheet(worksheet);
+  const dataset = parseWorksheet(worksheet);
+  console.info(
+    `${LOG_PREFIX} Parsed worksheet "${sheetName}" with ${dataset.rows.length} rows.`,
+  );
+  return dataset;
 };
