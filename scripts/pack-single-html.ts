@@ -64,6 +64,24 @@ const ensureFile = async (filePath: string): Promise<void> => {
   }
 };
 
+const verifySingleLine = (output: string): void => {
+  if (/[\r\n]/.test(output)) {
+    throw new Error('Packed output must be a single line.');
+  }
+};
+
+const verifyAssetsInlined = (output: string): void => {
+  const hasStylesheetLinks = /<link\b[^>]*rel=["']stylesheet["'][^>]*>/i.test(output);
+  if (hasStylesheetLinks) {
+    throw new Error('Packed output still contains stylesheet links.');
+  }
+
+  const hasModuleScripts = /<script\b[^>]*type=["']module["'][^>]*src=["'][^"']+["'][^>]*><\/script>/i.test(output);
+  if (hasModuleScripts) {
+    throw new Error('Packed output still contains module script src references.');
+  }
+};
+
 /**
  * Inline assets and emit a single-line HTML output.
  */
@@ -72,6 +90,8 @@ const pack = async (): Promise<void> => {
   const html = await readFile(indexPath, 'utf8');
   const inlined = await inlineAssets(html);
   const singleLine = inlined.replace(/\r?\n+/g, '');
+  verifySingleLine(singleLine);
+  verifyAssetsInlined(singleLine);
   await writeFile(indexPath, singleLine, 'utf8');
 };
 
