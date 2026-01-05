@@ -7,7 +7,7 @@ import { z } from 'zod';
 export const envSchema = z
   .object({
     PAGE_TITLE: z.string().min(1, 'PAGE_TITLE is required.'),
-    COMPANY_LOGO_BASE64: z.string().min(1, 'COMPANY_LOGO_BASE64 is required.'),
+    COMPANY_LOGO_SVG: z.string().min(1, 'COMPANY_LOGO_SVG is required.'),
     EXCEL_FILE_PATH: z.string().min(1, 'EXCEL_FILE_PATH is required.'),
     ROWS_PER_PAGE: z.coerce
       .number()

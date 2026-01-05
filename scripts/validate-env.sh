@@ -7,7 +7,7 @@ ENV_FILE="$ROOT_DIR/.env"
 # Required configuration keys (must exist and be non-empty).
 REQUIRED_KEYS=(
   "PAGE_TITLE"
-  "COMPANY_LOGO_BASE64"
+  "COMPANY_LOGO_SVG"
   "EXCEL_FILE_PATH"
   "ROWS_PER_PAGE"
   "AUTO_REFRESH_INTERVAL_MS"
