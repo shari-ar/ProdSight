@@ -20,7 +20,7 @@ Configuration is **build-time only** and sourced from either local `.env` files 
 
 **Allowed variables (exactly five):**
 - `PAGE_TITLE`
-- `COMPANY_LOGO_BASE64`
+- `COMPANY_LOGO_SVG`
 - `EXCEL_FILE_PATH`
 - `ROWS_PER_PAGE`
 - `AUTO_REFRESH_INTERVAL_MS`
