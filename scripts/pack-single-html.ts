@@ -1,9 +1,11 @@
+import { createHash } from 'node:crypto';
 import { access, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 // Dist output directory and primary entry file.
 const distDir = path.resolve(process.cwd(), 'dist');
 const indexPath = path.join(distDir, 'index.html');
+const checksumPath = path.join(distDir, 'SHA256SUMS.txt');
 
 const logStep = (message: string): void => {
   console.info(`[pack-single-html] ${message}`);
@@ -105,6 +107,18 @@ const verifyAssetsInlined = (output: string): void => {
   }
 };
 
+const createSha256 = async (filePath: string): Promise<string> => {
+  const buffer = await readFile(filePath);
+  return createHash('sha256').update(buffer).digest('hex');
+};
+
+const writeChecksumFile = async (filePath: string): Promise<void> => {
+  const hash = await createSha256(filePath);
+  const filename = path.basename(filePath);
+  const contents = `${hash}  ${filename}\n`;
+  await writeFile(checksumPath, contents, 'utf8');
+};
+
 /**
  * Inline assets and emit a single-line HTML output.
  */
@@ -119,6 +133,8 @@ const pack = async (): Promise<void> => {
   verifySingleLine(singleLine);
   verifyAssetsInlined(singleLine);
   await writeFile(indexPath, singleLine, 'utf8');
+  logStep('Generating SHA256SUMS.txt');
+  await writeChecksumFile(indexPath);
   logStep('Pack complete');
 };
 
