@@ -135,9 +135,10 @@ const pack = async (): Promise<void> => {
   verifySingleLine(singleLine);
   verifyAssetsInlined(singleLine);
   await writeFile(indexPath, outputBuffer);
-  logStep('Generating SHA256SUMS.txt');
+  logStep(`Generating checksum manifest: ${checksumPath}`);
   const hash = createSha256(outputBuffer);
   await writeChecksumFile(indexPath, hash);
+  logStep(`Checksum manifest written (sha256: ${hash})`);
   logStep('Pack complete');
 };
 
