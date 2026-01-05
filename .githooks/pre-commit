@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Resolve repo root to ensure the hook runs from the correct directory.
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+
+# Run the .env validation hook from the repository root.
+bash "$ROOT_DIR/scripts/validate-env.sh"
