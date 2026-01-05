@@ -67,4 +67,4 @@ Common runtime issues (file not found, date parsing errors, manual refresh probl
 
 ---
 
-If you need a full technical walkthrough, start with [docs/overview.md](./docs/overview.md).
+If you need a full technical walkthrough, start with [docs/overview.md](./docs/overview.md). 
