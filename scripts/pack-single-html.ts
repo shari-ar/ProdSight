@@ -19,6 +19,9 @@ const normalizeAssetPath = (assetPath: string): string => {
 const inlineAssets = async (html: string): Promise<string> => {
   let output = html;
 
+  const modulePreloadRegex = /<link\b[^>]*rel=["']modulepreload["'][^>]*>/g;
+  output = output.replace(modulePreloadRegex, '');
+
   const cssRegex = /<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["'][^>]*>/g;
   output = await replaceAsync(output, cssRegex, async (_match, href) => {
     const assetFile = path.join(distDir, normalizeAssetPath(href));
@@ -71,14 +74,25 @@ const verifySingleLine = (output: string): void => {
 };
 
 const verifyAssetsInlined = (output: string): void => {
-  const hasStylesheetLinks = /<link\b[^>]*rel=["']stylesheet["'][^>]*>/i.test(output);
-  if (hasStylesheetLinks) {
-    throw new Error('Packed output still contains stylesheet links.');
+  const violations: string[] = [];
+
+  const stylesheetMatches = output.match(/<link\b[^>]*rel=["']stylesheet["'][^>]*>/gi);
+  if (stylesheetMatches) {
+    violations.push(`stylesheet links (${stylesheetMatches.length})`);
   }
 
-  const hasModuleScripts = /<script\b[^>]*type=["']module["'][^>]*src=["'][^"']+["'][^>]*><\/script>/i.test(output);
-  if (hasModuleScripts) {
-    throw new Error('Packed output still contains module script src references.');
+  const modulePreloadMatches = output.match(/<link\b[^>]*rel=["']modulepreload["'][^>]*>/gi);
+  if (modulePreloadMatches) {
+    violations.push(`modulepreload links (${modulePreloadMatches.length})`);
+  }
+
+  const scriptSrcMatches = output.match(/<script\b[^>]*src=["'][^"']+["'][^>]*><\/script>/gi);
+  if (scriptSrcMatches) {
+    violations.push(`script src tags (${scriptSrcMatches.length})`);
+  }
+
+  if (violations.length > 0) {
+    throw new Error(`Packed output still contains external asset tags: ${violations.join(', ')}.`);
   }
 };
 
