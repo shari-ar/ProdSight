@@ -1,0 +1,27 @@
+{
+  "name": "prodsight",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build && tsx scripts/pack-single-html.ts",
+    "dev": "vite",
+    "preview": "vite preview",
+    "lint:env": "bash scripts/validate-env.sh"
+  },
+  "dependencies": {
+    "dotenv": "17.2.1",
+    "jalaali-js": "1.2.8",
+    "xlsx": "0.20.2",
+    "zod": "4.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.5",
+    "esbuild": "0.27.2",
+    "tailwindcss": "4.1.0",
+    "tsx": "4.19.2",
+    "typescript": "5.7.3",
+    "vite": "7.3.1",
+    "vitest": "4.0.1"
+  }
+}
