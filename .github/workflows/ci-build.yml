@@ -70,3 +70,24 @@ jobs:
 
       - name: Build single-file output
         run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          # Make artifact names unique per workflow run to avoid collisions.
+          name: prodsight-single-file-build-${{ github.run_number }}
+          # Fail the workflow if expected build outputs are missing.
+          if-no-files-found: error
+          # Keep artifacts long enough for distribution without indefinite retention.
+          retention-days: 30
+          path: |
+            # Publish the single-file offline build and its checksum manifest.
+            dist/index.html
+            dist/SHA256SUMS.txt
+
+      - name: Log published artifacts
+        run: |
+          echo "Published CI artifacts:"
+          echo "  - dist/index.html"
+          echo "  - dist/SHA256SUMS.txt"
+          echo "Artifact name: prodsight-single-file-build-${{ github.run_number }}"
