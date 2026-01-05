@@ -1,0 +1,72 @@
+name: CI Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '25.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create build .env from secrets
+        env:
+          # Build-time configuration values are sourced from GitHub Actions secrets.
+          PAGE_TITLE: ${{ secrets.PAGE_TITLE }}
+          COMPANY_LOGO_SVG: ${{ secrets.COMPANY_LOGO_SVG }}
+          EXCEL_FILE_PATH: ${{ secrets.EXCEL_FILE_PATH }}
+          ROWS_PER_PAGE: ${{ secrets.ROWS_PER_PAGE }}
+          AUTO_REFRESH_INTERVAL_MS: ${{ secrets.AUTO_REFRESH_INTERVAL_MS }}
+        run: |
+          set -euo pipefail
+
+          # Required keys must be present to satisfy strict build-time validation.
+          required_keys=(
+            "PAGE_TITLE"
+            "COMPANY_LOGO_SVG"
+            "EXCEL_FILE_PATH"
+            "ROWS_PER_PAGE"
+            "AUTO_REFRESH_INTERVAL_MS"
+          )
+
+          # Fail fast when any required secret is missing.
+          missing=()
+          for key in "${required_keys[@]}"; do
+            if [ -z "${!key:-}" ]; then
+              missing+=("$key")
+            fi
+          done
+
+          if [ "${#missing[@]}" -gt 0 ]; then
+            printf '[ERROR] Missing required CI secrets: %s\n' "${missing[*]}" >&2
+            exit 1
+          fi
+
+          # Emit a deterministic .env containing only the expected keys.
+          {
+            printf 'PAGE_TITLE=%s\n' "$PAGE_TITLE"
+            printf 'COMPANY_LOGO_SVG=%s\n' "$COMPANY_LOGO_SVG"
+            printf 'EXCEL_FILE_PATH=%s\n' "$EXCEL_FILE_PATH"
+            printf 'ROWS_PER_PAGE=%s\n' "$ROWS_PER_PAGE"
+            printf 'AUTO_REFRESH_INTERVAL_MS=%s\n' "$AUTO_REFRESH_INTERVAL_MS"
+          } > .env
+
+      - name: Build single-file output
+        run: npm run build

@@ -7,7 +7,7 @@ All UI configuration is read from a `.env` file and **validated before building*
 | Variable | Type | Description |
 |---|---|---|
 | `PAGE_TITLE` | string | Visible page title in the UI (Persian). |
-| `COMPANY_LOGO_BASE64` | string | Base64‑encoded image string for the logo. |
+| `COMPANY_LOGO_SVG` | string | Inline SVG markup string for the logo. |
 | `EXCEL_FILE_PATH` | string | Absolute or relative path to the Excel file. |
 | `ROWS_PER_PAGE` | number | Number of rows displayed in the table. |
 | `AUTO_REFRESH_INTERVAL_MS` | bigint | Auto refresh interval in milliseconds. |
@@ -22,7 +22,7 @@ All UI configuration is read from a `.env` file and **validated before building*
 
 ```env
 PAGE_TITLE=برنامه تولید کارخانه
-COMPANY_LOGO_BASE64=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...
+COMPANY_LOGO_SVG=<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 32" role="img" aria-label="لوگو"><text x="0" y="24" font-size="24">ProdSight</text></svg>
 EXCEL_FILE_PATH=\\\\server\\share\\production.xlsx
 ROWS_PER_PAGE=10
 AUTO_REFRESH_INTERVAL_MS=1800000

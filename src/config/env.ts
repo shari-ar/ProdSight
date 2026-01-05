@@ -33,7 +33,7 @@ export const loadConfig = (): AppConfig => {
 
   return {
     pageTitle: result.data.PAGE_TITLE,
-    companyLogoBase64: result.data.COMPANY_LOGO_BASE64,
+    companyLogoSvg: result.data.COMPANY_LOGO_SVG,
     excelFilePath: result.data.EXCEL_FILE_PATH,
     rowsPerPage: result.data.ROWS_PER_PAGE,
     autoRefreshIntervalMs: result.data.AUTO_REFRESH_INTERVAL_MS,

@@ -6,7 +6,7 @@ import { appConfig } from '../config/runtime';
 export const layout = (): string => `
   <main class="shell">
     <header class="header">
-      <img class="logo" src="${appConfig.companyLogoBase64}" alt="لوگو" />
+      <span class="logo" role="img" aria-label="لوگو">${appConfig.companyLogoSvg}</span>
       <div>
         <h1 class="title">${appConfig.pageTitle}</h1>
         <p class="subtitle">اسکلت اولیه برای برنامه آفلاین ProdSight</p>
