@@ -74,8 +74,9 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: prodsight-single-file-build
+          name: prodsight-single-file-build-${{ github.run_number }}
           if-no-files-found: error
+          retention-days: 30
           path: |
             dist/index.html
             dist/SHA256SUMS.txt
