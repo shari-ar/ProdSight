@@ -5,6 +5,10 @@ import path from 'node:path';
 const distDir = path.resolve(process.cwd(), 'dist');
 const indexPath = path.join(distDir, 'index.html');
 
+const logStep = (message: string): void => {
+  console.info(`[pack-single-html] ${message}`);
+};
+
 // Normalize asset paths emitted by Vite into filesystem paths.
 const normalizeAssetPath = (assetPath: string): string => {
   if (assetPath.startsWith('/')) {
@@ -105,13 +109,17 @@ const verifyAssetsInlined = (output: string): void => {
  * Inline assets and emit a single-line HTML output.
  */
 const pack = async (): Promise<void> => {
+  logStep(`Packing ${indexPath}`);
   await ensureFile(indexPath);
   const html = await readFile(indexPath, 'utf8');
+  logStep('Inlining assets');
   const inlined = await inlineAssets(html);
   const singleLine = inlined.replace(/\r?\n+/g, '');
+  logStep('Validating output');
   verifySingleLine(singleLine);
   verifyAssetsInlined(singleLine);
   await writeFile(indexPath, singleLine, 'utf8');
+  logStep('Pack complete');
 };
 
 await pack();
