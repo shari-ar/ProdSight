@@ -107,10 +107,12 @@ const verifyAssetsInlined = (output: string): void => {
   }
 };
 
+// Compute a SHA-256 hash for a given payload (Buffer or string).
 const createSha256 = (input: Buffer | string): string => {
   return createHash('sha256').update(input).digest('hex');
 };
 
+// Emit SHA256SUMS.txt alongside the packed output using the provided hash.
 const writeChecksumFile = async (filePath: string, hash: string): Promise<void> => {
   const filename = path.basename(filePath);
   const contents = `${hash}  ${filename}\n`;
@@ -127,6 +129,7 @@ const pack = async (): Promise<void> => {
   logStep('Inlining assets');
   const inlined = await inlineAssets(html);
   const singleLine = inlined.replace(/\r?\n+/g, '');
+  // Use a buffer to guarantee the hash matches the exact bytes written to disk.
   const outputBuffer = Buffer.from(singleLine, 'utf8');
   logStep('Validating output');
   verifySingleLine(singleLine);
