@@ -3,7 +3,6 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "workspaceFolder": "/workspace/ProdSight",
   "postCreateCommand": "bash .devcontainer/bootstrap.sh",
   "customizations": {
     "vscode": {
