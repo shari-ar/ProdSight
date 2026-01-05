@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { access, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const distDir = path.resolve(process.cwd(), 'dist');
@@ -49,7 +49,16 @@ const replaceAsync = async (
   return result;
 };
 
+const ensureFile = async (filePath: string): Promise<void> => {
+  try {
+    await access(filePath);
+  } catch {
+    throw new Error(`Missing build asset: ${filePath}`);
+  }
+};
+
 const pack = async (): Promise<void> => {
+  await ensureFile(indexPath);
   const html = await readFile(indexPath, 'utf8');
   const inlined = await inlineAssets(html);
   const singleLine = inlined.replace(/\r?\n+/g, '');

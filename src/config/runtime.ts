@@ -1,10 +1,4 @@
-export type AppConfig = {
-  pageTitle: string;
-  companyLogoBase64: string;
-  excelFilePath: string;
-  rowsPerPage: number;
-  autoRefreshIntervalMs: number;
-};
+import type { AppConfig } from './types';
 
 declare const __APP_CONFIG__: AppConfig;
 

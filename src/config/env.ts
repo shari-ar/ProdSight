@@ -1,29 +1,20 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import dotenv from 'dotenv';
+import { ZodError } from 'zod';
 import { envSchema } from './schema';
+import type { AppConfig } from './types';
 
-export type AppConfig = {
-  pageTitle: string;
-  companyLogoBase64: string;
-  excelFilePath: string;
-  rowsPerPage: number;
-  autoRefreshIntervalMs: number;
-};
+const ENV_FILENAME = '.env';
 
-const formatZodError = (error: Error): string => {
-  if ('issues' in error) {
-    const issues = (error as { issues: Array<{ path: string[]; message: string }> }).issues;
-    return issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`).join('\n');
-  }
-  return error.message;
-};
+const formatZodError = (error: ZodError): string =>
+  error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`).join('\n');
 
 export const loadConfig = (): AppConfig => {
-  const envPath = path.resolve(process.cwd(), '.env');
+  const envPath = path.resolve(process.cwd(), ENV_FILENAME);
 
   if (!fs.existsSync(envPath)) {
-    throw new Error('Missing .env file. Build requires all five configuration values.');
+    throw new Error(`Missing ${ENV_FILENAME} file. Build requires all five configuration values.`);
   }
 
   const rawEnv = fs.readFileSync(envPath, { encoding: 'utf8' });
@@ -32,7 +23,7 @@ export const loadConfig = (): AppConfig => {
 
   if (!result.success) {
     const message = formatZodError(result.error);
-    throw new Error(`Invalid .env configuration:\n${message}`);
+    throw new Error(`Invalid ${ENV_FILENAME} configuration:\n${message}`);
   }
 
   return {
