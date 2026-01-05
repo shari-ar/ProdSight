@@ -34,24 +34,35 @@ jobs:
           ROWS_PER_PAGE: ${{ secrets.ROWS_PER_PAGE }}
           AUTO_REFRESH_INTERVAL_MS: ${{ secrets.AUTO_REFRESH_INTERVAL_MS }}
         run: |
-          python - <<'PY'
-          import os
-          from pathlib import Path
+          set -euo pipefail
 
-          keys = [
-              "PAGE_TITLE",
-              "COMPANY_LOGO_BASE64",
-              "EXCEL_FILE_PATH",
-              "ROWS_PER_PAGE",
-              "AUTO_REFRESH_INTERVAL_MS",
-          ]
+          required_keys=(
+            "PAGE_TITLE"
+            "COMPANY_LOGO_BASE64"
+            "EXCEL_FILE_PATH"
+            "ROWS_PER_PAGE"
+            "AUTO_REFRESH_INTERVAL_MS"
+          )
 
-          env_path = Path(".env")
-          with env_path.open("w", encoding="utf-8") as handle:
-              for key in keys:
-                  value = os.environ.get(key, "")
-                  handle.write(f"{key}={value}\n")
-          PY
+          missing=()
+          for key in "${required_keys[@]}"; do
+            if [ -z "${!key:-}" ]; then
+              missing+=("$key")
+            fi
+          done
+
+          if [ "${#missing[@]}" -gt 0 ]; then
+            printf '[ERROR] Missing required CI secrets: %s\n' "${missing[*]}" >&2
+            exit 1
+          fi
+
+          {
+            printf 'PAGE_TITLE=%s\n' "$PAGE_TITLE"
+            printf 'COMPANY_LOGO_BASE64=%s\n' "$COMPANY_LOGO_BASE64"
+            printf 'EXCEL_FILE_PATH=%s\n' "$EXCEL_FILE_PATH"
+            printf 'ROWS_PER_PAGE=%s\n' "$ROWS_PER_PAGE"
+            printf 'AUTO_REFRESH_INTERVAL_MS=%s\n' "$AUTO_REFRESH_INTERVAL_MS"
+          } > .env
 
       - name: Build single-file output
         run: npm run build
