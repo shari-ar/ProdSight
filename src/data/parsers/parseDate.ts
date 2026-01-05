@@ -39,9 +39,31 @@ const parseDateParts = (parts: number[]): Date | null => {
   return null;
 };
 
+const parseDelimitedDate = (value: string): Date | null => {
+  const normalized = normalizeNumericString(value)
+    .replace(DATE_SEPARATORS, '/')
+    .replace(/\s+/g, '');
+
+  const rawParts = normalized.split('/');
+  if (rawParts.length !== 3) {
+    return null;
+  }
+
+  const numericParts = rawParts.map((part) => parseNumber(part));
+  if (numericParts.some((part) => part === null)) {
+    return null;
+  }
+
+  return parseDateParts(numericParts.map((part) => Math.trunc(part!)));
+};
+
 const parseExcelSerialDate = (value: number): Date | null => {
+  if (!Number.isFinite(value)) {
+    return null;
+  }
+  const dayValue = Math.trunc(value);
   const excelEpoch = Date.UTC(1899, 11, 30);
-  const date = new Date(excelEpoch + value * 24 * 60 * 60 * 1000);
+  const date = new Date(excelEpoch + dayValue * 24 * 60 * 60 * 1000);
   if (Number.isNaN(date.getTime())) {
     return null;
   }
@@ -69,15 +91,5 @@ export const parseDate = (value: unknown): Date | null => {
     return null;
   }
 
-  const normalized = normalizeNumericString(text)
-    .replace(DATE_SEPARATORS, '/')
-    .replace(/\s+/g, '');
-
-  const parts = normalized
-    .split('/')
-    .map((part) => parseNumber(part))
-    .filter((part): part is number => part !== null)
-    .map((part) => Math.trunc(part));
-
-  return parseDateParts(parts);
+  return parseDelimitedDate(text);
 };

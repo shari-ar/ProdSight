@@ -55,7 +55,7 @@ const normalizeRow = (
 ): NormalizedRow => {
   const dateValue = parseDate(row[dateIndex]);
   if (!dateValue) {
-    throw new Error(`Invalid or missing date value at row ${sourceRowIndex + 1}.`);
+    throw new Error(`Invalid or missing date value at row ${sourceRowIndex}.`);
   }
 
   const cells: Record<string, NormalizedCell> = {};
@@ -75,6 +75,7 @@ const parseWorksheet = (worksheet: XLSX.WorkSheet): ExcelDataset => {
     header: 1,
     raw: true,
     blankrows: false,
+    defval: null,
   });
 
   if (rows.length === 0) {
@@ -87,7 +88,9 @@ const parseWorksheet = (worksheet: XLSX.WorkSheet): ExcelDataset => {
   const normalizedRows = rows
     .slice(1)
     .filter((row) => Array.isArray(row) && row.length > 0)
-    .map((row, index) => normalizeRow(row, headers, dateIndex, index + 1));
+    .map((row, index) =>
+      normalizeRow(row.slice(0, headers.length), headers, dateIndex, index + 2),
+    );
 
   return {
     headers,
@@ -108,10 +111,11 @@ export const loadExcelDataset = async (filePath: string): Promise<ExcelDataset> 
   const buffer = await response.arrayBuffer();
   const workbook = XLSX.read(buffer, { type: 'array' });
 
-  const sheetName = workbook.SheetNames[0];
-  if (!sheetName) {
-    throw new Error('Excel workbook does not contain any worksheets.');
+  if (workbook.SheetNames.length !== 1) {
+    throw new Error('Excel workbook must contain exactly one worksheet.');
   }
+
+  const sheetName = workbook.SheetNames[0];
 
   const worksheet = workbook.Sheets[sheetName];
   if (!worksheet) {
