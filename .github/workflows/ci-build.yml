@@ -28,6 +28,7 @@ jobs:
 
       - name: Create build .env from secrets
         env:
+          # Build-time configuration values are sourced from GitHub Actions secrets.
           PAGE_TITLE: ${{ secrets.PAGE_TITLE }}
           COMPANY_LOGO_BASE64: ${{ secrets.COMPANY_LOGO_BASE64 }}
           EXCEL_FILE_PATH: ${{ secrets.EXCEL_FILE_PATH }}
@@ -36,6 +37,7 @@ jobs:
         run: |
           set -euo pipefail
 
+          # Required keys must be present to satisfy strict build-time validation.
           required_keys=(
             "PAGE_TITLE"
             "COMPANY_LOGO_BASE64"
@@ -44,6 +46,7 @@ jobs:
             "AUTO_REFRESH_INTERVAL_MS"
           )
 
+          # Fail fast when any required secret is missing.
           missing=()
           for key in "${required_keys[@]}"; do
             if [ -z "${!key:-}" ]; then
@@ -56,6 +59,7 @@ jobs:
             exit 1
           fi
 
+          # Emit a deterministic .env containing only the expected keys.
           {
             printf 'PAGE_TITLE=%s\n' "$PAGE_TITLE"
             printf 'COMPANY_LOGO_BASE64=%s\n' "$COMPANY_LOGO_BASE64"
