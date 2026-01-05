@@ -84,3 +84,10 @@ jobs:
             # Publish the single-file offline build and its checksum manifest.
             dist/index.html
             dist/SHA256SUMS.txt
+
+      - name: Log published artifacts
+        run: |
+          echo "Published CI artifacts:"
+          echo "  - dist/index.html"
+          echo "  - dist/SHA256SUMS.txt"
+          echo "Artifact name: prodsight-single-file-build-${{ github.run_number }}"
