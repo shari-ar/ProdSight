@@ -19,6 +19,7 @@ const normalizeAssetPath = (assetPath: string): string => {
 const inlineAssets = async (html: string): Promise<string> => {
   let output = html;
 
+  // Remove Vite modulepreload hints; these are external references in single-file output.
   const modulePreloadRegex = /<link\b[^>]*rel=["']modulepreload["'][^>]*>/g;
   output = output.replace(modulePreloadRegex, '');
 
@@ -74,18 +75,22 @@ const verifySingleLine = (output: string): void => {
 };
 
 const verifyAssetsInlined = (output: string): void => {
+  // Collect any remaining external asset references so failures are actionable.
   const violations: string[] = [];
 
+  // Stylesheet links should be fully inlined into <style> tags.
   const stylesheetMatches = output.match(/<link\b[^>]*rel=["']stylesheet["'][^>]*>/gi);
   if (stylesheetMatches) {
     violations.push(`stylesheet links (${stylesheetMatches.length})`);
   }
 
+  // Module preload hints must be stripped to keep the output self-contained.
   const modulePreloadMatches = output.match(/<link\b[^>]*rel=["']modulepreload["'][^>]*>/gi);
   if (modulePreloadMatches) {
     violations.push(`modulepreload links (${modulePreloadMatches.length})`);
   }
 
+  // Script tags should be inlined, so no remaining src references are allowed.
   const scriptSrcMatches = output.match(/<script\b[^>]*src=["'][^"']+["'][^>]*><\/script>/gi);
   if (scriptSrcMatches) {
     violations.push(`script src tags (${scriptSrcMatches.length})`);
