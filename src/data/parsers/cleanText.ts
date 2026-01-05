@@ -1,3 +1,4 @@
+// Common zero-width and BOM characters to strip from input.
 const INVISIBLE_CHARS = /[\u200B-\u200D\uFEFF]/g;
 
 /**

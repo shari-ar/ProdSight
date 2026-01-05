@@ -4,10 +4,13 @@ import { parseDate } from './parsers/parseDate';
 import { parseNumber } from './parsers/parseNumber';
 import type { ExcelDataset, NormalizedCell, NormalizedRow } from './model';
 
+// Accepted header labels for locating the Date column (case-insensitive).
 const DATE_HEADER_ALIASES = new Set(['date', 'تاریخ', 'تاريخ']);
 
+// Normalize header strings while keeping original label for display.
 const normalizeHeader = (header: string): string => header.trim();
 
+// Extract headers until the first empty cell.
 const detectHeaders = (row: unknown[]): string[] => {
   const headers: string[] = [];
 
@@ -26,6 +29,7 @@ const detectHeaders = (row: unknown[]): string[] => {
   return headers;
 };
 
+// Find the index of the first Date/تاریخ header.
 const findDateColumnIndex = (headers: string[]): number => {
   const index = headers.findIndex((header) => DATE_HEADER_ALIASES.has(header.toLowerCase()));
   if (index === -1) {
@@ -34,6 +38,7 @@ const findDateColumnIndex = (headers: string[]): number => {
   return index;
 };
 
+// Normalize a cell value into a predictable primitive.
 const normalizeCell = (value: unknown): NormalizedCell => {
   if (typeof value === 'number') {
     return value;
@@ -47,6 +52,7 @@ const normalizeCell = (value: unknown): NormalizedCell => {
   return cleanText(value);
 };
 
+// Normalize one row and enforce a valid Date value.
 const normalizeRow = (
   row: unknown[],
   headers: string[],
@@ -70,6 +76,7 @@ const normalizeRow = (
   };
 };
 
+// Convert a worksheet into normalized headers and rows.
 const parseWorksheet = (worksheet: XLSX.WorkSheet): ExcelDataset => {
   const rows = XLSX.utils.sheet_to_json<unknown[]>(worksheet, {
     header: 1,

@@ -1,8 +1,10 @@
 import { cleanText } from './cleanText';
 import { normalizeNumericString, parseNumber } from './parseNumber';
 
+// Supported date separators for string parsing.
 const DATE_SEPARATORS = /[-/.]/g;
 
+// Ensure the date is valid and normalized to UTC midnight.
 const createUtcDate = (year: number, month: number, day: number): Date | null => {
   const date = new Date(Date.UTC(year, month - 1, day));
   if (
@@ -15,6 +17,7 @@ const createUtcDate = (year: number, month: number, day: number): Date | null =>
   return date;
 };
 
+// Interpret date parts based on known formats (YYYY/MM/DD, DD/MM/YYYY, MM/DD/YYYY).
 const parseDateParts = (parts: number[]): Date | null => {
   if (parts.length !== 3) {
     return null;
@@ -39,6 +42,7 @@ const parseDateParts = (parts: number[]): Date | null => {
   return null;
 };
 
+// Parse a delimited date string into a UTC Date.
 const parseDelimitedDate = (value: string): Date | null => {
   const normalized = normalizeNumericString(value)
     .replace(DATE_SEPARATORS, '/')
@@ -57,6 +61,7 @@ const parseDelimitedDate = (value: string): Date | null => {
   return parseDateParts(numericParts.map((part) => Math.trunc(part!)));
 };
 
+// Convert Excel serial date numbers to UTC dates.
 const parseExcelSerialDate = (value: number): Date | null => {
   if (!Number.isFinite(value)) {
     return null;
