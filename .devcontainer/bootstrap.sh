@@ -21,6 +21,9 @@ if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   log_info "Configured git hooks path to .githooks."
 fi
 
+# Update npm
+npm install -g npm
+
 # Install dependencies only when a package manifest exists.
 if [ -f package.json ]; then
   if [ -f package-lock.json ]; then
