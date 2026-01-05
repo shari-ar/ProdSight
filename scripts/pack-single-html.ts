@@ -1,9 +1,11 @@
 import { access, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
+// Dist output directory and primary entry file.
 const distDir = path.resolve(process.cwd(), 'dist');
 const indexPath = path.join(distDir, 'index.html');
 
+// Normalize asset paths emitted by Vite into filesystem paths.
 const normalizeAssetPath = (assetPath: string): string => {
   if (assetPath.startsWith('/')) {
     return assetPath.slice(1);
@@ -11,6 +13,9 @@ const normalizeAssetPath = (assetPath: string): string => {
   return assetPath.replace(/^\.\//, '');
 };
 
+/**
+ * Inline CSS and module JS assets into the HTML output.
+ */
 const inlineAssets = async (html: string): Promise<string> => {
   let output = html;
 
@@ -31,6 +36,7 @@ const inlineAssets = async (html: string): Promise<string> => {
   return output;
 };
 
+// Async string replacement helper for asset inlining.
 const replaceAsync = async (
   input: string,
   regex: RegExp,
@@ -49,6 +55,7 @@ const replaceAsync = async (
   return result;
 };
 
+// Fail fast if a required build asset is missing.
 const ensureFile = async (filePath: string): Promise<void> => {
   try {
     await access(filePath);
@@ -57,6 +64,9 @@ const ensureFile = async (filePath: string): Promise<void> => {
   }
 };
 
+/**
+ * Inline assets and emit a single-line HTML output.
+ */
 const pack = async (): Promise<void> => {
   await ensureFile(indexPath);
   const html = await readFile(indexPath, 'utf8');

@@ -1,5 +1,6 @@
 import { layout } from './layout';
 
+// Ensure a stable root container for rendering.
 const ensureRoot = (): HTMLElement => {
   const existing = document.getElementById('app');
   if (existing) {
@@ -11,6 +12,9 @@ const ensureRoot = (): HTMLElement => {
   return root;
 };
 
+/**
+ * Render the static shell for the minimal Phase 2 UI.
+ */
 export const renderShell = (): void => {
   const root = ensureRoot();
   root.innerHTML = layout();

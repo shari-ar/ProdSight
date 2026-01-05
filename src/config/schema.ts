@@ -1,5 +1,9 @@
 import { z } from 'zod';
 
+/**
+ * Zod schema for validating the build-time .env configuration.
+ * Strict mode ensures no extra keys are permitted.
+ */
 export const envSchema = z
   .object({
     PAGE_TITLE: z.string().min(1, 'PAGE_TITLE is required.'),

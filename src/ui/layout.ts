@@ -1,5 +1,8 @@
 import { appConfig } from '../config/runtime';
 
+/**
+ * Minimal RTL layout for the Phase 2 scaffold.
+ */
 export const layout = (): string => `
   <main class="shell">
     <header class="header">

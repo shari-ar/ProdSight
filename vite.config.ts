@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { loadConfig } from './src/config/env';
 
+// Load validated configuration at build time for injection.
 const appConfig = loadConfig();
 
 export default defineConfig({

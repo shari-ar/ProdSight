@@ -5,11 +5,16 @@ import { ZodError } from 'zod';
 import { envSchema } from './schema';
 import type { AppConfig } from './types';
 
+// Source filename used for build-time configuration.
 const ENV_FILENAME = '.env';
 
+// Normalize Zod validation issues into a readable multiline string.
 const formatZodError = (error: ZodError): string =>
   error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`).join('\n');
 
+/**
+ * Loads and validates the build-time .env file, then maps it to the runtime config shape.
+ */
 export const loadConfig = (): AppConfig => {
   const envPath = path.resolve(process.cwd(), ENV_FILENAME);
 
