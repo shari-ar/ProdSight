@@ -36,7 +36,7 @@ const inlineAssets = async (html: string): Promise<string> => {
     return `<style>${css}</style>`;
   });
 
-  const jsRegex = /<script\b([^>]*?)\s+src=["']([^"']+)["']([^>]*)><\/script>/g;
+  const jsRegex = /<script\b([^>]*?)\s+src=["']([^"']+)["']([^>]*)><\/script>/gis;
   output = await replaceAsync(output, jsRegex, async (_match, beforeAttrs, src, afterAttrs) => {
     const assetFile = path.join(distDir, normalizeAssetPath(src));
     const js = await readFile(assetFile, 'utf8');
@@ -59,11 +59,16 @@ const replaceAsync = async (
     return input;
   }
 
-  let result = input;
+  let result = '';
+  let lastIndex = 0;
   for (const match of matches) {
+    const matchIndex = match.index ?? 0;
+    result += input.slice(lastIndex, matchIndex);
     const replacement = await replacer(match[0], ...match.slice(1));
-    result = result.replace(match[0], replacement);
+    result += replacement;
+    lastIndex = matchIndex + match[0].length;
   }
+  result += input.slice(lastIndex);
   return result;
 };
 
