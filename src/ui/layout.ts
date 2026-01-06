@@ -6,21 +6,26 @@ import { logger } from '../utils/logger';
  */
 // Construct the RTL UI shell with a formal, metadata-free header.
 export const layout = (): string => {
+  // Log only non-sensitive values for diagnostics.
   logger.info('Building RTL layout shell.', {
     title: appConfig.pageTitle,
   });
 
+  // Return the full RTL layout as a single HTML template string.
   return `
   <main class="shell">
     <header class="header">
+      <!-- Brand/logo region -->
       <div class="logo" role="img" aria-label="لوگو">${appConfig.companyLogoSvg}</div>
       <div class="header-text">
+        <!-- Formal tag line and title -->
         <div class="header-kicker">سامانه رسمی پایش تولید</div>
         <h1 class="title">${appConfig.pageTitle}</h1>
         <p class="subtitle">نمایش حرفه‌ای گزارش‌ها با ساختار راست‌به‌چپ و قالب سازمانی</p>
       </div>
     </header>
 
+    <!-- Primary data visualization card -->
     <section class="card data-card">
       <div class="card-header">
         <div>
@@ -32,12 +37,15 @@ export const layout = (): string => {
           <span class="legend-text">جدیدترین ردیف</span>
         </div>
       </div>
+      <!-- Empty-state placeholder (toggled by the render pipeline) -->
       <div id="excel-empty" class="empty-state" hidden>
         <p>داده‌ای برای نمایش وجود ندارد. مسیر فایل را بررسی کنید.</p>
       </div>
+      <!-- Table container injected by the render pipeline -->
       <div id="excel-table" class="table-wrapper" hidden></div>
     </section>
 
+    <!-- Footer status and action controls -->
     <section class="card status-card" aria-live="polite">
       <div class="status-line">
         <div class="status-info">
@@ -54,6 +62,7 @@ export const layout = (): string => {
           <button id="excel-browse" class="primary-button" type="button">
             انتخاب فایل اکسل
           </button>
+          <!-- Screen-reader-only file input for manual Excel selection -->
           <input
             id="excel-file-input"
             class="sr-only"
