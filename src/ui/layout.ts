@@ -3,7 +3,12 @@ import { appConfig } from '../config/runtime';
 /**
  * RTL Persian layout aligned with the v0.1 UI specification.
  */
-export const layout = (): string => `
+export const layout = (): string => {
+  const numberFormatter = new Intl.NumberFormat('fa-IR');
+  const rowsPerPage = numberFormatter.format(appConfig.rowsPerPage);
+  const refreshInterval = numberFormatter.format(appConfig.autoRefreshIntervalMs);
+
+  return `
   <main class="shell">
     <header class="header">
       <div class="logo" role="img" aria-label="لوگو">${appConfig.companyLogoSvg}</div>
@@ -18,11 +23,11 @@ export const layout = (): string => `
         </div>
         <div class="meta-item">
           <span class="meta-label">بازه بروزرسانی</span>
-          <span class="meta-value mono">${appConfig.autoRefreshIntervalMs}ms</span>
+          <span class="meta-value mono">${refreshInterval} میلی‌ثانیه</span>
         </div>
         <div class="meta-item">
           <span class="meta-label">ردیف در صفحه</span>
-          <span class="meta-value mono">${appConfig.rowsPerPage}</span>
+          <span class="meta-value mono">${rowsPerPage}</span>
         </div>
       </div>
     </header>
@@ -72,3 +77,4 @@ export const layout = (): string => `
     </section>
   </main>
 `;
+};

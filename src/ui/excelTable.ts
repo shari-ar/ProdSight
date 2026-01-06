@@ -6,7 +6,17 @@ type ExcelTableElements = {
   emptyState: HTMLElement;
   tableWrapper: HTMLElement;
   lastRefresh: HTMLElement;
+  refreshButton: HTMLButtonElement;
 };
+
+const numberFormatter = new Intl.NumberFormat('fa-IR');
+const dateFormatter = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
+  dateStyle: 'medium',
+});
+const dateTimeFormatter = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+});
 
 const getExcelTableElements = (): ExcelTableElements => {
   const status = document.getElementById('excel-status');
@@ -14,12 +24,20 @@ const getExcelTableElements = (): ExcelTableElements => {
   const emptyState = document.getElementById('excel-empty');
   const tableWrapper = document.getElementById('excel-table');
   const lastRefresh = document.getElementById('excel-last-refresh');
+  const refreshButton = document.getElementById('excel-refresh');
 
-  if (!status || !summary || !emptyState || !tableWrapper || !lastRefresh) {
+  if (
+    !status ||
+    !summary ||
+    !emptyState ||
+    !tableWrapper ||
+    !lastRefresh ||
+    !(refreshButton instanceof HTMLButtonElement)
+  ) {
     throw new Error('Excel table elements are missing from the layout.');
   }
 
-  return { status, summary, emptyState, tableWrapper, lastRefresh };
+  return { status, summary, emptyState, tableWrapper, lastRefresh, refreshButton };
 };
 
 const setStatus = (elements: ExcelTableElements, text: string, tone: 'idle' | 'success' | 'error') => {
@@ -28,21 +46,32 @@ const setStatus = (elements: ExcelTableElements, text: string, tone: 'idle' | 's
   elements.status.classList.add(`status--${tone}`);
 };
 
+const parseIsoDateString = (value: string): Date | null => {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) {
+    return null;
+  }
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const parsed = new Date(year, month - 1, day);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+  return parsed;
+};
+
 const formatDate = (value: string): string => {
-  const parsed = new Date(value);
+  const parsed = parseIsoDateString(value) ?? new Date(value);
   if (Number.isNaN(parsed.getTime())) {
     return value;
   }
-  return new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
-    dateStyle: 'medium',
-  }).format(parsed);
+  return dateFormatter.format(parsed);
 };
 
 const formatDateTime = (date: Date): string => {
-  return new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(date);
+  return dateTimeFormatter.format(date);
 };
 
 const formatCell = (value: NormalizedCell, isDateCell: boolean): string => {
@@ -50,7 +79,7 @@ const formatCell = (value: NormalizedCell, isDateCell: boolean): string => {
     return '—';
   }
   if (typeof value === 'number') {
-    return new Intl.NumberFormat('fa-IR').format(value);
+    return numberFormatter.format(value);
   }
   return isDateCell ? formatDate(value) : value;
 };
@@ -123,6 +152,8 @@ export const renderExcelLoadingState = (): void => {
   const elements = getExcelTableElements();
   setStatus(elements, 'در حال بارگذاری...', 'idle');
   elements.summary.textContent = 'در انتظار دریافت داده از فایل اکسل.';
+  elements.lastRefresh.textContent = '—';
+  elements.refreshButton.disabled = true;
   elements.emptyState.classList.remove('empty-state--error');
   elements.emptyState.hidden = true;
   elements.tableWrapper.hidden = true;
@@ -134,6 +165,7 @@ export const renderExcelErrorState = (message: string): void => {
   setStatus(elements, 'خطا در بارگذاری', 'error');
   elements.summary.textContent = message;
   elements.lastRefresh.textContent = '—';
+  elements.refreshButton.disabled = false;
   elements.emptyState.classList.add('empty-state--error');
   elements.emptyState.hidden = false;
   elements.tableWrapper.hidden = true;
@@ -146,6 +178,7 @@ export const renderExcelTable = (data: ExcelData): void => {
     setStatus(elements, 'بدون داده', 'idle');
     elements.summary.textContent = 'هیچ ردیفی در فایل اکسل یافت نشد.';
     elements.lastRefresh.textContent = formatDateTime(new Date());
+    elements.refreshButton.disabled = false;
     elements.emptyState.classList.remove('empty-state--error');
     elements.emptyState.hidden = false;
     elements.tableWrapper.hidden = true;
@@ -157,6 +190,7 @@ export const renderExcelTable = (data: ExcelData): void => {
   setStatus(elements, 'نمایش داده‌ها', 'success');
   elements.summary.textContent = `نمایش ${data.rows.length} ردیف از فایل اکسل.`;
   elements.lastRefresh.textContent = formatDateTime(new Date());
+  elements.refreshButton.disabled = false;
   elements.emptyState.classList.remove('empty-state--error');
   elements.emptyState.hidden = true;
   elements.tableWrapper.hidden = false;
