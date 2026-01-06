@@ -22,6 +22,10 @@ export const layout = (): string => {
 
     <!-- Primary data visualization card -->
     <section class="card data-card">
+      <!-- Empty-state placeholder (toggled by the render pipeline) -->
+      <div id="excel-empty" class="empty-state" hidden>
+        <p>داده‌ای برای نمایش وجود ندارد. مسیر فایل را بررسی کنید.</p>
+      </div>
       <div id="excel-table" class="table-wrapper" hidden></div>
     </section>
 
