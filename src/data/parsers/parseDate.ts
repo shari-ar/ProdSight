@@ -11,7 +11,7 @@ const parseExcelSerial = (value: number): Date | null => {
   if (!parsed) {
     return null;
   }
-  return new Date(parsed.y, parsed.m - 1, parsed.d);
+  return toDateOnly(new Date(parsed.y, parsed.m - 1, parsed.d));
 };
 
 const buildDate = (year: number, month: number, day: number): Date | null => {
@@ -26,7 +26,7 @@ const buildDate = (year: number, month: number, day: number): Date | null => {
   ) {
     return null;
   }
-  return date;
+  return toDateOnly(date);
 };
 
 const parseDateParts = (parts: string[]): Date | null => {

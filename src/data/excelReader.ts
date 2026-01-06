@@ -28,11 +28,17 @@ const resolveDateHeader = (headers: string[]): string => {
 
 const parseHeaders = (headerRow: unknown[]): string[] => {
   const headers: string[] = [];
+  const seen = new Set<string>();
   for (const cell of headerRow) {
     const header = typeof cell === 'string' ? cleanText(cell) : cleanText(String(cell ?? ''));
     if (!header) {
       break;
     }
+    const normalizedHeader = normalizeHeader(header);
+    if (seen.has(normalizedHeader)) {
+      throw new ExcelDataError('سرستون‌های تکراری در فایل اکسل مجاز نیستند.');
+    }
+    seen.add(normalizedHeader);
     headers.push(header);
   }
 
@@ -119,27 +125,41 @@ const buildNormalizedRows = (
 };
 
 const normalizePathToUrl = (filePath: string): string => {
-  if (/^https?:\/\//i.test(filePath) || /^file:\/\//i.test(filePath)) {
-    return filePath;
+  const cleanedPath = cleanText(filePath);
+  if (!cleanedPath) {
+    throw new ExcelDataError('مسیر فایل اکسل نامعتبر است.');
   }
 
-  if (filePath.startsWith('\\\\')) {
-    return `file://${filePath.replace(/\\/g, '/')}`;
+  if (/^https?:\/\//i.test(cleanedPath) || /^file:\/\//i.test(cleanedPath)) {
+    return cleanedPath;
   }
 
-  if (/^[a-zA-Z]:\\/.test(filePath)) {
-    return `file:///${filePath.replace(/\\/g, '/')}`;
+  if (cleanedPath.startsWith('\\\\')) {
+    const uncPath = cleanedPath.replace(/^\\\\+/, '').replace(/\\/g, '/');
+    return encodeURI(`file://${uncPath}`);
   }
 
-  return filePath;
+  if (/^[a-zA-Z]:[\\/]/.test(cleanedPath)) {
+    const windowsPath = cleanedPath.replace(/\\/g, '/');
+    return encodeURI(`file:///${windowsPath}`);
+  }
+
+  return encodeURI(new URL(cleanedPath, window.location.href).toString());
 };
 
 const fetchExcelArrayBuffer = async (filePath: string): Promise<ArrayBuffer> => {
-  const response = await fetch(normalizePathToUrl(filePath));
-  if (!response.ok) {
-    throw new ExcelDataError('خواندن فایل اکسل از مسیر تنظیم‌شده ممکن نیست.');
+  try {
+    const response = await fetch(normalizePathToUrl(filePath));
+    if (!response.ok) {
+      throw new ExcelDataError('خواندن فایل اکسل از مسیر تنظیم‌شده ممکن نیست.');
+    }
+    return await response.arrayBuffer();
+  } catch (error) {
+    if (error instanceof ExcelDataError) {
+      throw error;
+    }
+    throw new ExcelDataError('بارگذاری فایل اکسل با خطا مواجه شد.');
   }
-  return response.arrayBuffer();
 };
 
 const parseWorkbook = (data: ArrayBuffer): ExcelData => {
