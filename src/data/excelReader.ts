@@ -5,12 +5,15 @@ import { cleanText } from './parsers/cleanText';
 import { parseDate } from './parsers/parseDate';
 import { parseNumber } from './parsers/parseNumber';
 
+/** Canonical header labels that qualify as the authoritative Date column. */
 const DATE_HEADERS = ['date', 'تاریخ'];
 
+/** Normalize headers to a stable lowercase/trimmed representation. */
 const normalizeHeader = (value: string): string => {
   return cleanText(value).toLowerCase();
 };
 
+/** Render a date-only ISO-8601 string to keep table output deterministic. */
 const formatDateISO = (date: Date): string => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -18,6 +21,7 @@ const formatDateISO = (date: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
+/** Resolve the header label that represents the Date column. */
 const resolveDateHeader = (headers: string[]): string => {
   const match = headers.find((header) => DATE_HEADERS.includes(normalizeHeader(header)));
   if (!match) {
@@ -26,6 +30,10 @@ const resolveDateHeader = (headers: string[]): string => {
   return match;
 };
 
+/**
+ * Extract column headers from the first row, stopping on the first empty cell.
+ * Duplicate headers are rejected to avoid collisions in the normalized output.
+ */
 const parseHeaders = (headerRow: unknown[]): string[] => {
   const headers: string[] = [];
   const seen = new Set<string>();
@@ -49,6 +57,7 @@ const parseHeaders = (headerRow: unknown[]): string[] => {
   return headers;
 };
 
+/** Normalize a cell into a string/number/null representation for rendering. */
 const normalizeCell = (value: unknown): NormalizedCell => {
   if (value === null || value === undefined) {
     return null;
@@ -74,6 +83,7 @@ const normalizeCell = (value: unknown): NormalizedCell => {
   return cleanText(String(value));
 };
 
+/** Detect rows that contain no meaningful data. */
 const isRowEmpty = (row: unknown[]): boolean => {
   return row.every((cell) => {
     if (cell === null || cell === undefined) {
@@ -86,6 +96,10 @@ const isRowEmpty = (row: unknown[]): boolean => {
   });
 };
 
+/**
+ * Convert raw sheet rows into normalized rows with an authoritative date column.
+ * Any row without a valid date is considered a critical data error.
+ */
 const buildNormalizedRows = (
   rows: unknown[][],
   headers: string[],
@@ -124,6 +138,10 @@ const buildNormalizedRows = (
   return normalized;
 };
 
+/**
+ * Normalize paths to URL forms that can be fetched in the browser environment.
+ * Supports http(s), file URLs, UNC paths, Windows drive paths, and relative paths.
+ */
 const normalizePathToUrl = (filePath: string): string => {
   const cleanedPath = cleanText(filePath);
   if (!cleanedPath) {
@@ -147,6 +165,9 @@ const normalizePathToUrl = (filePath: string): string => {
   return encodeURI(new URL(cleanedPath, window.location.href).toString());
 };
 
+/**
+ * Fetch an Excel file as an ArrayBuffer and map low-level errors to user-facing ones.
+ */
 const fetchExcelArrayBuffer = async (filePath: string): Promise<ArrayBuffer> => {
   try {
     const response = await fetch(normalizePathToUrl(filePath));
@@ -162,6 +183,7 @@ const fetchExcelArrayBuffer = async (filePath: string): Promise<ArrayBuffer> => 
   }
 };
 
+/** Parse the first worksheet and return normalized Excel data. */
 const parseWorkbook = (data: ArrayBuffer): ExcelData => {
   const workbook = XLSX.read(data, { type: 'array', cellDates: true });
   const [firstSheetName] = workbook.SheetNames;
@@ -187,6 +209,7 @@ const parseWorkbook = (data: ArrayBuffer): ExcelData => {
   return { headers, dateHeader, rows };
 };
 
+/** Public API for loading and parsing Excel data from a configured path. */
 export const loadExcelData = async (filePath: string): Promise<ExcelData> => {
   const buffer = await fetchExcelArrayBuffer(filePath);
   return parseWorkbook(buffer);

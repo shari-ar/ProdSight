@@ -2,10 +2,12 @@ import * as XLSX from 'xlsx';
 import { cleanText } from './cleanText';
 import { normalizeDigits } from './digits';
 
+/** Strip any time components so comparisons remain date-only. */
 const toDateOnly = (date: Date): Date => {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 };
 
+/** Parse Excel serial date numbers using SheetJS utilities. */
 const parseExcelSerial = (value: number): Date | null => {
   const parsed = XLSX.SSF.parse_date_code(value);
   if (!parsed) {
@@ -14,6 +16,7 @@ const parseExcelSerial = (value: number): Date | null => {
   return toDateOnly(new Date(parsed.y, parsed.m - 1, parsed.d));
 };
 
+/** Guard against invalid date components and leap issues. */
 const buildDate = (year: number, month: number, day: number): Date | null => {
   if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) {
     return null;
@@ -29,6 +32,7 @@ const buildDate = (year: number, month: number, day: number): Date | null => {
   return toDateOnly(date);
 };
 
+/** Parse YYYY-MM-DD, DD/MM/YYYY, or MM/DD/YYYY formatted date parts. */
 const parseDateParts = (parts: string[]): Date | null => {
   if (parts.length !== 3) {
     return null;
@@ -58,6 +62,10 @@ const parseDateParts = (parts: string[]): Date | null => {
   return null;
 };
 
+/**
+ * Parse Excel date values from strings, numbers, or Date objects.
+ * Returns null when the input cannot be interpreted as a valid date.
+ */
 export const parseDate = (value: unknown): Date | null => {
   if (value === null || value === undefined) {
     return null;
