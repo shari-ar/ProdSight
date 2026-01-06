@@ -39,9 +39,9 @@ jobs:
 
       - name: Create build .env from secrets
         env:
-          # Build-time configuration values are sourced from GitHub Actions secrets.
+          # Build-time configuration values are sourced from GitHub Actions secrets or repo assets.
           PAGE_TITLE: ${{ secrets.PAGE_TITLE }}
-          COMPANY_LOGO_SVG: ${{ secrets.COMPANY_LOGO_SVG }}
+          COMPANY_LOGO_ASSET_PATH: assets/company-logo.svg
           EXCEL_FILE_PATH: ${{ secrets.EXCEL_FILE_PATH }}
           ROWS_PER_PAGE: ${{ secrets.ROWS_PER_PAGE }}
           AUTO_REFRESH_INTERVAL_MS: ${{ secrets.AUTO_REFRESH_INTERVAL_MS }}
@@ -51,7 +51,7 @@ jobs:
           # Required keys must be present to satisfy strict build-time validation.
           required_keys=(
             "PAGE_TITLE"
-            "COMPANY_LOGO_SVG"
+            "COMPANY_LOGO_ASSET_PATH"
             "EXCEL_FILE_PATH"
             "ROWS_PER_PAGE"
             "AUTO_REFRESH_INTERVAL_MS"
@@ -73,7 +73,7 @@ jobs:
           # Emit a deterministic .env containing only the expected keys.
           {
             printf 'PAGE_TITLE=%s\n' "$PAGE_TITLE"
-            printf 'COMPANY_LOGO_SVG=%s\n' "$COMPANY_LOGO_SVG"
+            printf 'COMPANY_LOGO_ASSET_PATH=%s\n' "$COMPANY_LOGO_ASSET_PATH"
             printf 'EXCEL_FILE_PATH=%s\n' "$EXCEL_FILE_PATH"
             printf 'ROWS_PER_PAGE=%s\n' "$ROWS_PER_PAGE"
             printf 'AUTO_REFRESH_INTERVAL_MS=%s\n' "$AUTO_REFRESH_INTERVAL_MS"

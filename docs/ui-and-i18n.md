@@ -11,7 +11,7 @@ The UI is designed for Persian (Farsi) users with an elegant, corporate look and
 
 ## Page Header
 
-- Company logo from `COMPANY_LOGO_SVG` (inline SVG markup)
+- Company logo from `COMPANY_LOGO_ASSET_PATH` (static SVG asset)
 - Title from `PAGE_TITLE`
 - Formal typography and spacing for readability
 
