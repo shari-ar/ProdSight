@@ -105,12 +105,10 @@ const buildTable = (data: ExcelData): HTMLTableElement => {
   table.appendChild(thead);
 
   const tbody = document.createElement('tbody');
-  const latestTimestamp =
-    data.rows.length > 0
-      ? Math.max(...data.rows.map((row) => row.date.getTime()))
-      : null;
+  const sortedRows = [...data.rows].sort((a, b) => b.date.getTime() - a.date.getTime());
+  const latestTimestamp = sortedRows.length > 0 ? sortedRows[0].date.getTime() : null;
 
-  data.rows.forEach((row) => {
+  sortedRows.forEach((row) => {
     const isLatest = latestTimestamp !== null && row.date.getTime() === latestTimestamp;
     tbody.appendChild(buildBodyRow(row, data.headers, data.dateHeader, isLatest));
   });
