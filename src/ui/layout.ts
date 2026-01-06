@@ -55,7 +55,6 @@ export const layout = (): string => {
           />
         </div>
       </div>
-      <p id="excel-summary" class="hint">در انتظار دریافت داده از فایل اکسل.</p>
     </section>
   </main>
 `;
