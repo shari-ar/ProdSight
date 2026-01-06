@@ -16,8 +16,10 @@ export const layout = (): string => {
   return `
   <main class="shell">
     <header class="header">
-      <h1 class="title">${appConfig.pageTitle}</h1>
       <div class="logo" role="img" aria-label="لوگو">${appConfig.companyLogoSvg}</div>
+      <div class="header-text">
+        <h1 class="title">${appConfig.pageTitle}</h1>
+      </div>
     </header>
 
     <!-- Primary data visualization card -->
