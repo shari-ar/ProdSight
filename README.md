@@ -25,7 +25,7 @@ ProdSight is configured **only at build time** using a `.env` file. All values a
 | Variable | Type | Description |
 |---|---|---|
 | `PAGE_TITLE` | string | Visible page title in the UI (Persian). |
-| `COMPANY_LOGO_SVG` | string | Inline SVG markup for the logo. |
+| `COMPANY_LOGO_ASSET_PATH` | string | Path to the static SVG asset (checked into the repo). |
 | `EXCEL_FILE_PATH` | string | Absolute or relative path to the Excel file. |
 | `ROWS_PER_PAGE` | number | Number of rows displayed in the table. |
 | `AUTO_REFRESH_INTERVAL_MS` | bigint | Auto refresh interval in milliseconds. |
