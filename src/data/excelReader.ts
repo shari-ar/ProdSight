@@ -226,3 +226,20 @@ export const loadExcelData = async (filePath: string): Promise<ExcelData> => {
   const buffer = await fetchExcelArrayBuffer(filePath);
   return parseWorkbook(buffer);
 };
+
+/** Public API for loading and parsing Excel data from a user-selected file. */
+export const loadExcelFile = async (file: File): Promise<ExcelData> => {
+  logger.debug('Loading Excel data from uploaded file.', {
+    fileName: file.name,
+    fileSize: file.size,
+  });
+  try {
+    const buffer = await file.arrayBuffer();
+    return parseWorkbook(buffer);
+  } catch (error) {
+    if (error instanceof ExcelDataError) {
+      throw error;
+    }
+    throw new ExcelDataError('بارگذاری فایل اکسل با خطا مواجه شد.');
+  }
+};

@@ -32,7 +32,16 @@ export const layout = (): string => `
       </div>
       <p id="excel-summary" class="hint">در انتظار دریافت داده از فایل اکسل.</p>
       <div id="excel-empty" class="empty-state" hidden>
-        هنوز داده‌ای برای نمایش وجود ندارد.
+        <p>هنوز داده‌ای برای نمایش وجود ندارد.</p>
+        <button id="excel-browse" class="primary-button" type="button">
+          انتخاب فایل اکسل
+        </button>
+        <input
+          id="excel-file-input"
+          class="sr-only"
+          type="file"
+          accept=".xlsx,.xls"
+        />
       </div>
       <div id="excel-table" class="table-wrapper" hidden></div>
     </section>
