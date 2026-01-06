@@ -28,10 +28,10 @@ body {
 /* Centered application container. */
 /* Main layout wrapper for the full-page shell. */
 .shell {
-  max-width: 1080px;
+  max-width: none;
   width: 100%;
-  margin: 56px auto;
-  padding: 24px 24px 72px;
+  margin: 40px auto;
+  padding: 24px clamp(16px, 4vw, 48px) 72px;
   display: flex;
   flex-direction: column;
   gap: 28px;
