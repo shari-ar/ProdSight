@@ -16,18 +16,22 @@ export const layout = (): string => {
   return `
   <main class="shell">
     <header class="header">
-      <h1 class="title">${appConfig.pageTitle}</h1>
+      <div class="header-text">
+        <span class="header-kicker">سامانه رصد تولید</span>
+        <h1 class="title">${appConfig.pageTitle}</h1>
+        <p class="subtitle">نمای کلی تولید روزانه و آخرین وضعیت فایل اکسل.</p>
+      </div>
       <div class="logo" role="img" aria-label="لوگو">${appConfig.companyLogoSvg}</div>
     </header>
 
     <!-- Primary data visualization card -->
     <section class="card data-card">
       <div class="card-header">
-        <div>
+        <div class="card-title">
           <h2>گزارش تولید</h2>
           <p class="hint">آخرین وضعیت تولید به صورت راست‌به‌چپ نمایش داده می‌شود.</p>
         </div>
-        <div class="table-legend">
+        <div class="table-legend" aria-label="راهنمای جدول">
           <span class="legend-badge">واپَسین</span>
           <span class="legend-text">جدیدترین ردیف</span>
         </div>
