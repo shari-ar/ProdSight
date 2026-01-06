@@ -31,9 +31,16 @@ export const loadConfig = (): AppConfig => {
     throw new Error(`Invalid ${ENV_FILENAME} configuration:\n${message}`);
   }
 
+  const logoAssetPath = path.resolve(process.cwd(), result.data.COMPANY_LOGO_ASSET_PATH);
+  if (!fs.existsSync(logoAssetPath)) {
+    throw new Error(`Missing company logo asset at ${logoAssetPath}.`);
+  }
+
+  const companyLogoSvg = fs.readFileSync(logoAssetPath, { encoding: 'utf8' });
+
   return {
     pageTitle: result.data.PAGE_TITLE,
-    companyLogoSvg: result.data.COMPANY_LOGO_SVG,
+    companyLogoSvg,
     excelFilePath: result.data.EXCEL_FILE_PATH,
     rowsPerPage: result.data.ROWS_PER_PAGE,
     autoRefreshIntervalMs: result.data.AUTO_REFRESH_INTERVAL_MS,
