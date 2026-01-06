@@ -7,8 +7,9 @@ import { logger } from '../utils/logger';
 // Construct the RTL UI shell with a formal, metadata-free header.
 export const layout = (): string => {
   // Log only non-sensitive values for diagnostics.
-  logger.info('Building RTL layout shell.', {
-    title: appConfig.pageTitle,
+  logger.info('ui.layout.build', {
+    component: 'layout',
+    pageTitle: appConfig.pageTitle,
   });
 
   // Return the full RTL layout as a single HTML template string.
