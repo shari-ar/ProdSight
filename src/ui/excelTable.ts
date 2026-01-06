@@ -1,4 +1,5 @@
 import type { ExcelData, NormalizedCell, NormalizedRow } from '../data/model';
+import { logger } from '../utils/logger';
 
 type ExcelTableElements = {
   status: HTMLElement;
@@ -155,6 +156,7 @@ const buildBodyRow = (
 
 export const renderExcelLoadingState = (): void => {
   const elements = getExcelTableElements();
+  logger.info('Rendering Excel loading state.');
   setStatus(elements, 'در حال بارگذاری...', 'idle');
   elements.summary.textContent = 'در انتظار دریافت داده از فایل اکسل.';
   elements.lastRefresh.textContent = '—';
@@ -167,6 +169,7 @@ export const renderExcelLoadingState = (): void => {
 
 export const renderExcelErrorState = (message: string): void => {
   const elements = getExcelTableElements();
+  logger.warn('Rendering Excel error state.', { message });
   setStatus(elements, 'خطا در بارگذاری', 'error');
   elements.summary.textContent = message;
   elements.lastRefresh.textContent = '—';
@@ -180,6 +183,7 @@ export const renderExcelErrorState = (message: string): void => {
 export const renderExcelTable = (data: ExcelData): void => {
   const elements = getExcelTableElements();
   if (data.rows.length === 0) {
+    logger.info('Rendering Excel empty state.');
     setStatus(elements, 'بدون داده', 'idle');
     elements.summary.textContent = 'هیچ ردیفی در فایل اکسل یافت نشد.';
     elements.lastRefresh.textContent = formatDateTime(new Date());
@@ -192,6 +196,11 @@ export const renderExcelTable = (data: ExcelData): void => {
   }
 
   const table = buildTable(data);
+  logger.info('Rendering Excel table.', {
+    headers: data.headers,
+    rows: data.rows.length,
+    dateHeader: data.dateHeader,
+  });
   setStatus(elements, 'نمایش داده‌ها', 'success');
   elements.summary.textContent = `نمایش ${data.rows.length} ردیف از فایل اکسل.`;
   elements.lastRefresh.textContent = formatDateTime(new Date());

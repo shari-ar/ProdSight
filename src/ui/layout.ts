@@ -1,4 +1,5 @@
 import { appConfig } from '../config/runtime';
+import { logger } from '../utils/logger';
 
 /**
  * RTL Persian layout aligned with the v0.1 UI specification.
@@ -8,6 +9,12 @@ export const layout = (): string => {
   const numberFormatter = new Intl.NumberFormat('fa-IR');
   const rowsPerPage = numberFormatter.format(appConfig.rowsPerPage);
   const refreshInterval = numberFormatter.format(appConfig.autoRefreshIntervalMs);
+
+  logger.info('Building RTL layout shell.', {
+    title: appConfig.pageTitle,
+    rowsPerPage: appConfig.rowsPerPage,
+    refreshIntervalMs: appConfig.autoRefreshIntervalMs,
+  });
 
   return `
   <main class="shell">
