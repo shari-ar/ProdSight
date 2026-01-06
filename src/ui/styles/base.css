@@ -2,8 +2,8 @@
 /* Base theme tokens for the RTL Persian interface. */
 :root {
   color-scheme: light;
-  font-family: "Vazirmatn", "Tahoma", sans-serif;
-  background-color: #f6f7fb;
+  font-family: "Vazirmatn", "IRANSansX", "Shabnam", "Tahoma", sans-serif;
+  background-color: #eef1f6;
   color: #1f2a44;
 }
 
@@ -14,16 +14,17 @@
 body {
   margin: 0;
   padding: 0;
+  background: radial-gradient(circle at top, #f4f6fb 0%, #eef1f6 45%, #e6eaf2 100%);
 }
 
 /* Centered application container. */
 .shell {
   max-width: 1080px;
-  margin: 48px auto;
-  padding: 24px 24px 64px;
+  margin: 56px auto;
+  padding: 24px 24px 72px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
 }
 
 /* Header with logo, title, and metadata tiles. */
@@ -31,19 +32,21 @@ body {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 20px;
-  padding: 16px 20px;
-  border-radius: 16px;
-  background: #ffffff;
-  box-shadow: 0 8px 20px rgba(31, 42, 68, 0.08);
+  padding: 20px 24px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 50%, #f1f4ff 100%);
+  border: 1px solid rgba(63, 92, 232, 0.12);
+  box-shadow: 0 16px 40px rgba(24, 37, 79, 0.12);
 }
 
 .logo {
-  width: 72px;
-  height: 72px;
-  border-radius: 12px;
+  width: 78px;
+  height: 78px;
+  border-radius: 18px;
   display: grid;
   place-items: center;
-  background: #f1f3f9;
+  background: linear-gradient(145deg, #eef2ff, #ffffff);
+  border: 1px solid rgba(63, 92, 232, 0.12);
 }
 
 .logo svg {
@@ -54,40 +57,33 @@ body {
 .header-text {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+}
+
+.header-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #3f5ce8;
 }
 
 .title {
   margin: 0;
-  font-size: 26px;
+  font-size: 30px;
+  font-weight: 700;
+  color: #1a2340;
 }
 
 .subtitle {
   margin: 0;
-  color: #5f6b85;
-}
-
-.header-meta {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.meta-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: #f8f9fc;
-  border: 1px solid #edf0f6;
+  color: #4d5b7a;
+  font-size: 14px;
 }
 
 .meta-label {
   font-size: 12px;
-  color: #7c869c;
+  font-weight: 600;
+  color: #6b7690;
 }
 
 .meta-value {
@@ -96,10 +92,11 @@ body {
 }
 
 .card {
-  padding: 20px 24px;
-  border-radius: 16px;
+  padding: 24px 28px;
+  border-radius: 18px;
   background: #ffffff;
-  box-shadow: 0 12px 30px rgba(31, 42, 68, 0.08);
+  border: 1px solid rgba(31, 42, 68, 0.08);
+  box-shadow: 0 18px 40px rgba(31, 42, 68, 0.1);
 }
 
 .card h2 {
@@ -111,6 +108,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fe 100%);
 }
 
 .status-line {
@@ -149,7 +147,7 @@ body {
 
 .status {
   font-size: 14px;
-  padding: 4px 12px;
+  padding: 6px 14px;
   border-radius: 999px;
   background: #eef1f7;
   color: #4d5b7a;
@@ -175,9 +173,10 @@ body {
 
 .table-wrapper {
   overflow-x: auto;
-  border-radius: 12px;
-  border: 1px solid #e6e9f0;
+  border-radius: 14px;
+  border: 1px solid #e3e7f1;
   background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
 }
 
 .excel-table {
@@ -189,15 +188,15 @@ body {
 .excel-table th,
 .excel-table td {
   padding: 12px 16px;
-  border-bottom: 1px solid #eef1f7;
+  border-bottom: 1px solid #edf1f7;
   text-align: right;
   font-size: 14px;
 }
 
 .excel-table thead th {
-  background: #f6f7fb;
-  color: #3d4b67;
-  font-weight: 600;
+  background: #f1f4fb;
+  color: #2f3c57;
+  font-weight: 700;
 }
 
 .excel-table tbody tr:nth-child(even) {
@@ -206,7 +205,7 @@ body {
 
 /* Highlight the newest row to match the UI specification. */
 .excel-row--latest {
-  background: #fef7e6;
+  background: #fff4dd;
   font-weight: 600;
   border-right: 4px solid #f5b544;
 }
@@ -225,7 +224,7 @@ body {
   font-size: 12px;
   padding: 2px 8px;
   border-radius: 999px;
-  background: #f5b544;
+  background: #f0b54a;
   color: #3b2b0f;
   font-weight: 700;
 }
@@ -241,7 +240,7 @@ body {
 .legend-badge {
   padding: 2px 8px;
   border-radius: 999px;
-  background: #f5b544;
+  background: #f0b54a;
   color: #3b2b0f;
   font-weight: 700;
 }
@@ -273,16 +272,17 @@ body {
 .primary-button {
   border: none;
   border-radius: 10px;
-  background: #3f5ce8;
+  background: linear-gradient(135deg, #3f5ce8 0%, #2d47c6 100%);
   color: #ffffff;
   padding: 10px 18px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 8px 16px rgba(63, 92, 232, 0.25);
 }
 
 .primary-button:hover {
-  background: #3350e0;
+  background: linear-gradient(135deg, #3752dd 0%, #273fb6 100%);
 }
 
 .primary-button:focus-visible {
@@ -299,6 +299,7 @@ body {
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 6px 12px rgba(31, 42, 68, 0.08);
 }
 
 .secondary-button:hover {
@@ -335,7 +336,7 @@ body {
 
 .hint {
   margin: 0;
-  color: #7c869c;
+  color: #6b7690;
 }
 
 .data-card .card-header {

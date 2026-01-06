@@ -6,14 +6,8 @@ import { logger } from '../utils/logger';
  */
 // Construct the RTL UI shell with localized numbers baked into the header metadata.
 export const layout = (): string => {
-  const numberFormatter = new Intl.NumberFormat('fa-IR');
-  const rowsPerPage = numberFormatter.format(appConfig.rowsPerPage);
-  const refreshInterval = numberFormatter.format(appConfig.autoRefreshIntervalMs);
-
   logger.info('Building RTL layout shell.', {
     title: appConfig.pageTitle,
-    rowsPerPage: appConfig.rowsPerPage,
-    refreshIntervalMs: appConfig.autoRefreshIntervalMs,
   });
 
   return `
@@ -21,24 +15,28 @@ export const layout = (): string => {
     <header class="header">
       <div class="logo" role="img" aria-label="لوگو">${appConfig.companyLogoSvg}</div>
       <div class="header-text">
+        <div class="header-kicker">سامانه رسمی پایش تولید</div>
         <h1 class="title">${appConfig.pageTitle}</h1>
-        <p class="subtitle">پایش برنامه تولید با داده‌های اکسل (آفلاین)</p>
-      </div>
-      <div class="header-meta">
-        <div class="meta-item">
-          <span class="meta-label">مسیر فایل</span>
-          <span class="meta-value mono">${appConfig.excelFilePath}</span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">بازه بروزرسانی</span>
-          <span class="meta-value mono">${refreshInterval} میلی‌ثانیه</span>
-        </div>
-        <div class="meta-item">
-          <span class="meta-label">ردیف در صفحه</span>
-          <span class="meta-value mono">${rowsPerPage}</span>
-        </div>
+        <p class="subtitle">نمایش حرفه‌ای گزارش‌ها با ساختار راست‌به‌چپ و قالب سازمانی</p>
       </div>
     </header>
+
+    <section class="card data-card">
+      <div class="card-header">
+        <div>
+          <h2>گزارش تولید</h2>
+          <p class="hint">آخرین وضعیت تولید به صورت راست‌به‌چپ نمایش داده می‌شود.</p>
+        </div>
+        <div class="table-legend">
+          <span class="legend-badge">واپَسین</span>
+          <span class="legend-text">جدیدترین ردیف</span>
+        </div>
+      </div>
+      <div id="excel-empty" class="empty-state" hidden>
+        <p>داده‌ای برای نمایش وجود ندارد. مسیر فایل را بررسی کنید.</p>
+      </div>
+      <div id="excel-table" class="table-wrapper" hidden></div>
+    </section>
 
     <section class="card status-card" aria-live="polite">
       <div class="status-line">
@@ -65,23 +63,6 @@ export const layout = (): string => {
         </div>
       </div>
       <p id="excel-summary" class="hint">در انتظار دریافت داده از فایل اکسل.</p>
-    </section>
-
-    <section class="card data-card">
-      <div class="card-header">
-        <div>
-          <h2>گزارش تولید</h2>
-          <p class="hint">آخرین وضعیت تولید به صورت راست‌به‌چپ نمایش داده می‌شود.</p>
-        </div>
-        <div class="table-legend">
-          <span class="legend-badge">واپَسین</span>
-          <span class="legend-text">جدیدترین ردیف</span>
-        </div>
-      </div>
-      <div id="excel-empty" class="empty-state" hidden>
-        <p>داده‌ای برای نمایش وجود ندارد. مسیر فایل را بررسی کنید.</p>
-      </div>
-      <div id="excel-table" class="table-wrapper" hidden></div>
     </section>
   </main>
 `;
