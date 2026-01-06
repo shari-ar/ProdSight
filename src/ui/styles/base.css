@@ -18,12 +18,18 @@ body {
   margin: 0;
   padding: 0;
   background: radial-gradient(circle at top, #f7f9fd 0%, #eef1f6 45%, #e6eaf2 100%);
+  direction: rtl;
+}
+
+#app {
+  width: 100%;
 }
 
 /* Centered application container. */
 /* Main layout wrapper for the full-page shell. */
 .shell {
   max-width: 1080px;
+  width: 100%;
   margin: 56px auto;
   padding: 24px 24px 72px;
   display: flex;
@@ -34,8 +40,8 @@ body {
 /* Header with logo, title, and metadata tiles. */
 /* Header card featuring brand and title. */
 .header {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
+  justify-content: space-between;
   gap: 20px;
   align-items: center;
   padding: 20px 24px;
@@ -55,6 +61,8 @@ body {
   place-items: center;
   background: linear-gradient(160deg, #eef2ff, #ffffff);
   border: 1px solid rgba(63, 92, 232, 0.18);
+  order: -1;
+  flex-shrink: 0;
 }
 
 .logo svg {
@@ -112,6 +120,7 @@ body {
   background: #ffffff;
   border: 1px solid rgba(31, 42, 68, 0.08);
   box-shadow: 0 16px 36px rgba(31, 42, 68, 0.1);
+  width: 100%;
 }
 
 .card h2 {
@@ -389,7 +398,8 @@ body {
 /* Responsive adjustments for narrower screens. */
 @media (max-width: 768px) {
   .header {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .status-line {
