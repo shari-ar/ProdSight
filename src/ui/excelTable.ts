@@ -3,7 +3,6 @@ import { logger } from '../utils/logger';
 
 type ExcelTableElements = {
   status: HTMLElement;
-  summary: HTMLElement;
   emptyState: HTMLElement;
   tableWrapper: HTMLElement;
   lastRefresh: HTMLElement;
@@ -22,7 +21,6 @@ const dateTimeFormatter = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
 
 const getExcelTableElements = (): ExcelTableElements => {
   const status = document.getElementById('excel-status');
-  const summary = document.getElementById('excel-summary');
   const emptyState = document.getElementById('excel-empty');
   const tableWrapper = document.getElementById('excel-table');
   const lastRefresh = document.getElementById('excel-last-refresh');
@@ -30,7 +28,6 @@ const getExcelTableElements = (): ExcelTableElements => {
 
   if (
     !status ||
-    !summary ||
     !emptyState ||
     !tableWrapper ||
     !lastRefresh ||
@@ -39,7 +36,7 @@ const getExcelTableElements = (): ExcelTableElements => {
     throw new Error('Excel table elements are missing from the layout.');
   }
 
-  return { status, summary, emptyState, tableWrapper, lastRefresh, refreshButton };
+  return { status, emptyState, tableWrapper, lastRefresh, refreshButton };
 };
 
 const setStatus = (elements: ExcelTableElements, text: string, tone: 'idle' | 'success' | 'error') => {
@@ -105,12 +102,10 @@ const buildTable = (data: ExcelData): HTMLTableElement => {
   table.appendChild(thead);
 
   const tbody = document.createElement('tbody');
-  const latestTimestamp =
-    data.rows.length > 0
-      ? Math.max(...data.rows.map((row) => row.date.getTime()))
-      : null;
+  const sortedRows = [...data.rows].sort((a, b) => b.date.getTime() - a.date.getTime());
+  const latestTimestamp = sortedRows.length > 0 ? sortedRows[0].date.getTime() : null;
 
-  data.rows.forEach((row) => {
+  sortedRows.forEach((row) => {
     const isLatest = latestTimestamp !== null && row.date.getTime() === latestTimestamp;
     tbody.appendChild(buildBodyRow(row, data.headers, data.dateHeader, isLatest));
   });
@@ -158,7 +153,6 @@ export const renderExcelLoadingState = (): void => {
   const elements = getExcelTableElements();
   logger.info('Rendering Excel loading state.');
   setStatus(elements, 'در حال بارگذاری...', 'idle');
-  elements.summary.textContent = 'در انتظار دریافت داده از فایل اکسل.';
   elements.lastRefresh.textContent = '—';
   elements.refreshButton.disabled = true;
   elements.emptyState.classList.remove('empty-state--error');
@@ -171,7 +165,6 @@ export const renderExcelErrorState = (message: string): void => {
   const elements = getExcelTableElements();
   logger.warn('Rendering Excel error state.', { message });
   setStatus(elements, 'خطا در بارگذاری', 'error');
-  elements.summary.textContent = message;
   elements.lastRefresh.textContent = '—';
   elements.refreshButton.disabled = false;
   elements.emptyState.classList.add('empty-state--error');
@@ -185,7 +178,6 @@ export const renderExcelTable = (data: ExcelData): void => {
   if (data.rows.length === 0) {
     logger.info('Rendering Excel empty state.');
     setStatus(elements, 'بدون داده', 'idle');
-    elements.summary.textContent = 'هیچ ردیفی در فایل اکسل یافت نشد.';
     elements.lastRefresh.textContent = formatDateTime(new Date());
     elements.refreshButton.disabled = false;
     elements.emptyState.classList.remove('empty-state--error');
@@ -202,7 +194,6 @@ export const renderExcelTable = (data: ExcelData): void => {
     dateHeader: data.dateHeader,
   });
   setStatus(elements, 'نمایش داده‌ها', 'success');
-  elements.summary.textContent = `نمایش ${data.rows.length} ردیف از فایل اکسل.`;
   elements.lastRefresh.textContent = formatDateTime(new Date());
   elements.refreshButton.disabled = false;
   elements.emptyState.classList.remove('empty-state--error');

@@ -17,28 +17,15 @@ export const layout = (): string => {
   <main class="shell">
     <header class="header">
       <div class="logo" role="img" aria-label="لوگو">${appConfig.companyLogoSvg}</div>
-      <div class="header-text">
-        <h1 class="title">${appConfig.pageTitle}</h1>
-      </div>
+      <h1 class="title">${appConfig.pageTitle}</h1>
     </header>
 
     <!-- Primary data visualization card -->
     <section class="card data-card">
-      <div class="card-header">
-        <div>
-          <h2>گزارش تولید</h2>
-          <p class="hint">آخرین وضعیت تولید به صورت راست‌به‌چپ نمایش داده می‌شود.</p>
-        </div>
-        <div class="table-legend">
-          <span class="legend-badge">واپَسین</span>
-          <span class="legend-text">جدیدترین ردیف</span>
-        </div>
-      </div>
       <!-- Empty-state placeholder (toggled by the render pipeline) -->
       <div id="excel-empty" class="empty-state" hidden>
         <p>داده‌ای برای نمایش وجود ندارد. مسیر فایل را بررسی کنید.</p>
       </div>
-      <!-- Table container injected by the render pipeline -->
       <div id="excel-table" class="table-wrapper" hidden></div>
     </section>
 
@@ -68,7 +55,6 @@ export const layout = (): string => {
           />
         </div>
       </div>
-      <p id="excel-summary" class="hint">در انتظار دریافت داده از فایل اکسل.</p>
     </section>
   </main>
 `;
