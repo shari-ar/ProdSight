@@ -1,6 +1,6 @@
 import { renderShell } from '../ui/render';
 import { appConfig } from '../config/runtime';
-import { loadExcelData } from '../data/excelReader';
+import { loadExcelData, loadExcelFile } from '../data/excelReader';
 import { logger } from '../utils/logger';
 import { renderExcelErrorState, renderExcelLoadingState, renderExcelTable } from '../ui/excelTable';
 
@@ -13,6 +13,7 @@ export const boot = (): void => {
   document.title = appConfig.pageTitle;
   renderShell();
   renderExcelLoadingState();
+  setupExcelBrowse();
 
   logger.info('Starting Excel load.', { filePath: appConfig.excelFilePath });
 
@@ -31,4 +32,44 @@ export const boot = (): void => {
       const message = error instanceof Error ? error.message : 'بارگذاری فایل اکسل ناموفق بود.';
       renderExcelErrorState(message);
     });
+};
+
+const setupExcelBrowse = (): void => {
+  const browseButton = document.getElementById('excel-browse');
+  const fileInput = document.getElementById('excel-file-input');
+
+  if (!(browseButton instanceof HTMLButtonElement) || !(fileInput instanceof HTMLInputElement)) {
+    return;
+  }
+
+  browseButton.addEventListener('click', () => {
+    fileInput.click();
+  });
+
+  fileInput.addEventListener('change', () => {
+    const [file] = fileInput.files ?? [];
+    if (!file) {
+      return;
+    }
+
+    renderExcelLoadingState();
+    void loadExcelFile(file)
+      .then((data) => {
+        logger.info('Excel data loaded successfully from upload.', {
+          headers: data.headers,
+          rows: data.rows.length,
+        });
+        renderExcelTable(data);
+      })
+      .catch((error) => {
+        logger.error('Failed to load uploaded Excel data.', {
+          error,
+        });
+        const message = error instanceof Error ? error.message : 'بارگذاری فایل اکسل ناموفق بود.';
+        renderExcelErrorState(message);
+      })
+      .finally(() => {
+        fileInput.value = '';
+      });
+  });
 };
