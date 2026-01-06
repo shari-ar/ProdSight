@@ -36,11 +36,13 @@ const inlineAssets = async (html: string): Promise<string> => {
     return `<style>${css}</style>`;
   });
 
-  const jsRegex = /<script\b[^>]*type=["']module["'][^>]*src=["']([^"']+)["'][^>]*><\/script>/g;
-  output = await replaceAsync(output, jsRegex, async (_match, src) => {
+  const jsRegex = /<script\b([^>]*?)\s+src=["']([^"']+)["']([^>]*)><\/script>/g;
+  output = await replaceAsync(output, jsRegex, async (_match, beforeAttrs, src, afterAttrs) => {
     const assetFile = path.join(distDir, normalizeAssetPath(src));
     const js = await readFile(assetFile, 'utf8');
-    return `<script type="module">${js}</script>`;
+    const combinedAttrs = `${beforeAttrs} ${afterAttrs}`.replace(/\s+/g, ' ').trim();
+    const attributes = combinedAttrs ? ` ${combinedAttrs}` : '';
+    return `<script${attributes}>${js}</script>`;
   });
 
   return output;
