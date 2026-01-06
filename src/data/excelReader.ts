@@ -4,6 +4,7 @@ import type { ExcelData, NormalizedCell, NormalizedRow } from './model';
 import { cleanText } from './parsers/cleanText';
 import { parseDate } from './parsers/parseDate';
 import { parseNumber } from './parsers/parseNumber';
+import { logger } from '../utils/logger';
 
 /** Canonical header labels that qualify as the authoritative Date column. */
 const DATE_HEADERS = ['date', 'تاریخ'];
@@ -206,11 +207,18 @@ const parseWorkbook = (data: ArrayBuffer): ExcelData => {
   const dateHeader = resolveDateHeader(headers);
   const rows = buildNormalizedRows(sheetRows.slice(1), headers, dateHeader);
 
+  logger.debug('Excel workbook parsed.', {
+    sheet: firstSheetName,
+    headers,
+    rows: rows.length,
+  });
+
   return { headers, dateHeader, rows };
 };
 
 /** Public API for loading and parsing Excel data from a configured path. */
 export const loadExcelData = async (filePath: string): Promise<ExcelData> => {
+  logger.debug('Loading Excel data.', { filePath });
   const buffer = await fetchExcelArrayBuffer(filePath);
   return parseWorkbook(buffer);
 };
