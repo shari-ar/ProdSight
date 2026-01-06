@@ -1,49 +1,59 @@
 /* Base document styling for the Phase 2 shell. */
 /* Base theme tokens for the RTL Persian interface. */
+/* Root theme tokens for the formal RTL UI. */
 :root {
   color-scheme: light;
-  font-family: "Vazirmatn", "Tahoma", sans-serif;
-  background-color: #f6f7fb;
+  font-family: "Vazirmatn", "IRANSansX", "Shabnam", "Tahoma", sans-serif;
+  background-color: #eef1f6;
   color: #1f2a44;
 }
 
+/* Ensure consistent box sizing across components. */
 * {
   box-sizing: border-box;
 }
 
+/* Provide a refined, neutral background canvas. */
 body {
   margin: 0;
   padding: 0;
+  background: radial-gradient(circle at top, #f7f9fd 0%, #eef1f6 45%, #e6eaf2 100%);
 }
 
 /* Centered application container. */
+/* Main layout wrapper for the full-page shell. */
 .shell {
   max-width: 1080px;
-  margin: 48px auto;
-  padding: 24px 24px 64px;
+  margin: 56px auto;
+  padding: 24px 24px 72px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
 }
 
 /* Header with logo, title, and metadata tiles. */
+/* Header card featuring brand and title. */
 .header {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 20px;
-  padding: 16px 20px;
-  border-radius: 16px;
-  background: #ffffff;
-  box-shadow: 0 8px 20px rgba(31, 42, 68, 0.08);
+  padding: 20px 24px;
+  border-radius: 20px;
+  background: linear-gradient(140deg, #ffffff 0%, #f6f8ff 60%, #f0f4ff 100%);
+  border: 1px solid rgba(63, 92, 232, 0.14);
+  box-shadow: 0 18px 40px rgba(24, 37, 79, 0.12);
+  position: relative;
 }
 
+/* Logo container to frame the inline SVG. */
 .logo {
-  width: 72px;
-  height: 72px;
-  border-radius: 12px;
+  width: 78px;
+  height: 78px;
+  border-radius: 18px;
   display: grid;
   place-items: center;
-  background: #f1f3f9;
+  background: linear-gradient(160deg, #eef2ff, #ffffff);
+  border: 1px solid rgba(63, 92, 232, 0.18);
 }
 
 .logo svg {
@@ -51,55 +61,56 @@ body {
   height: 100%;
 }
 
+/* Stacked title content within the header. */
 .header-text {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
+/* Uppercase-style kicker for formal tone. */
+.header-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #2c47c2;
+}
+
+/* Primary page title. */
 .title {
   margin: 0;
-  font-size: 26px;
+  font-size: 30px;
+  font-weight: 700;
+  color: #1a2340;
 }
 
+/* Subtitle supporting the main title. */
 .subtitle {
   margin: 0;
-  color: #5f6b85;
+  color: #4d5b7a;
+  font-size: 14px;
 }
 
-.header-meta {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.meta-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: #f8f9fc;
-  border: 1px solid #edf0f6;
-}
-
+/* Shared label styling for metadata text. */
 .meta-label {
   font-size: 12px;
-  color: #7c869c;
+  font-weight: 600;
+  color: #6b7690;
 }
 
+/* Shared value styling for metadata text. */
 .meta-value {
   font-size: 14px;
   color: #1f2a44;
 }
 
+/* Elevated card container styling. */
 .card {
-  padding: 20px 24px;
-  border-radius: 16px;
+  padding: 24px 28px;
+  border-radius: 18px;
   background: #ffffff;
-  box-shadow: 0 12px 30px rgba(31, 42, 68, 0.08);
+  border: 1px solid rgba(31, 42, 68, 0.08);
+  box-shadow: 0 16px 36px rgba(31, 42, 68, 0.1);
 }
 
 .card h2 {
@@ -107,10 +118,13 @@ body {
 }
 
 /* Status card showing last refresh and actions. */
+/* Status card reserved for refresh controls and state. */
 .status-card {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  background: linear-gradient(130deg, #ffffff 0%, #f8f9fe 100%);
+  border-top: 3px solid rgba(63, 92, 232, 0.18);
 }
 
 .status-line {
@@ -147,9 +161,10 @@ body {
   margin-bottom: 12px;
 }
 
+/* Status pill for refresh state. */
 .status {
   font-size: 14px;
-  padding: 4px 12px;
+  padding: 6px 14px;
   border-radius: 999px;
   background: #eef1f7;
   color: #4d5b7a;
@@ -173,13 +188,16 @@ body {
   color: #b42318;
 }
 
+/* Table frame and scroll container. */
 .table-wrapper {
   overflow-x: auto;
-  border-radius: 12px;
-  border: 1px solid #e6e9f0;
+  border-radius: 14px;
+  border: 1px solid #e3e7f1;
   background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
 }
 
+/* Base table styling for Excel output. */
 .excel-table {
   width: 100%;
   border-collapse: collapse;
@@ -189,24 +207,26 @@ body {
 .excel-table th,
 .excel-table td {
   padding: 12px 16px;
-  border-bottom: 1px solid #eef1f7;
+  border-bottom: 1px solid #edf1f7;
   text-align: right;
   font-size: 14px;
 }
 
+/* Table header row styles. */
 .excel-table thead th {
-  background: #f6f7fb;
-  color: #3d4b67;
-  font-weight: 600;
+  background: #f1f4fb;
+  color: #2f3c57;
+  font-weight: 700;
 }
 
 .excel-table tbody tr:nth-child(even) {
-  background: #fbfcfe;
+  background: #f9fbff;
 }
 
 /* Highlight the newest row to match the UI specification. */
+/* Latest row emphasis per UI specification. */
 .excel-row--latest {
-  background: #fef7e6;
+  background: #fff4dd;
   font-weight: 600;
   border-right: 4px solid #f5b544;
 }
@@ -221,11 +241,12 @@ body {
   gap: 8px;
 }
 
+/* Badge for the latest row indicator. */
 .latest-badge {
   font-size: 12px;
   padding: 2px 8px;
   border-radius: 999px;
-  background: #f5b544;
+  background: #f0b54a;
   color: #3b2b0f;
   font-weight: 700;
 }
@@ -238,10 +259,11 @@ body {
   color: #7c869c;
 }
 
+/* Legend badge for table key. */
 .legend-badge {
   padding: 2px 8px;
   border-radius: 999px;
-  background: #f5b544;
+  background: #f0b54a;
   color: #3b2b0f;
   font-weight: 700;
 }
@@ -270,19 +292,21 @@ body {
   margin: 0 0 12px;
 }
 
+/* Primary action button (browse). */
 .primary-button {
   border: none;
   border-radius: 10px;
-  background: #3f5ce8;
+  background: linear-gradient(135deg, #3f5ce8 0%, #2d47c6 100%);
   color: #ffffff;
   padding: 10px 18px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 8px 16px rgba(63, 92, 232, 0.25);
 }
 
 .primary-button:hover {
-  background: #3350e0;
+  background: linear-gradient(135deg, #3752dd 0%, #273fb6 100%);
 }
 
 .primary-button:focus-visible {
@@ -290,6 +314,7 @@ body {
   outline-offset: 2px;
 }
 
+/* Secondary action button (manual refresh). */
 .secondary-button {
   border: 1px solid #cfd6e6;
   border-radius: 10px;
@@ -299,6 +324,7 @@ body {
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 6px 12px rgba(31, 42, 68, 0.08);
 }
 
 .secondary-button:hover {
@@ -315,6 +341,7 @@ body {
   outline-offset: 2px;
 }
 
+/* Screen-reader-only utility for hidden form controls. */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -327,15 +354,30 @@ body {
   border: 0;
 }
 
+/* Monospace styling for numeric metadata. */
 .mono {
   font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
   direction: ltr;
   unicode-bidi: plaintext;
 }
 
+/* Supporting hint text styling. */
 .hint {
   margin: 0;
-  color: #7c869c;
+  color: #6b7690;
+}
+
+/* Data card title styling. */
+.data-card h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1b2542;
+}
+
+/* Limit hint line length for improved readability. */
+.card-header .hint {
+  max-width: 420px;
+  line-height: 1.7;
 }
 
 .data-card .card-header {
