@@ -17,9 +17,7 @@ export const layout = (): string => {
   <main class="shell">
     <header class="header">
       <div class="logo" role="img" aria-label="لوگو">${appConfig.companyLogoSvg}</div>
-      <div class="header-text">
-        <h1 class="title">${appConfig.pageTitle}</h1>
-      </div>
+      <h1 class="title">${appConfig.pageTitle}</h1>
     </header>
 
     <!-- Primary data visualization card -->
