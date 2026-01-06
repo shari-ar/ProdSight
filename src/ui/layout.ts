@@ -25,5 +25,16 @@ export const layout = (): string => `
       </p>
       <p class="hint">این خروجی یک نمونه مینیمال برای فاز ۲ است.</p>
     </section>
+    <section class="card" aria-live="polite">
+      <div class="card-header">
+        <h2>داده‌های اکسل</h2>
+        <span id="excel-status" class="status">در حال بارگذاری...</span>
+      </div>
+      <p id="excel-summary" class="hint">در انتظار دریافت داده از فایل اکسل.</p>
+      <div id="excel-empty" class="empty-state" hidden>
+        هنوز داده‌ای برای نمایش وجود ندارد.
+      </div>
+      <div id="excel-table" class="table-wrapper" hidden></div>
+    </section>
   </main>
 `;
