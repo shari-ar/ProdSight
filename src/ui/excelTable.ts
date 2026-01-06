@@ -9,6 +9,7 @@ type ExcelTableElements = {
   refreshButton: HTMLButtonElement;
 };
 
+// Cached formatters keep rendering fast and consistent for Persian locale output.
 const numberFormatter = new Intl.NumberFormat('fa-IR');
 const dateFormatter = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
   dateStyle: 'medium',
@@ -46,6 +47,7 @@ const setStatus = (elements: ExcelTableElements, text: string, tone: 'idle' | 's
   elements.status.classList.add(`status--${tone}`);
 };
 
+// Parse ISO date-only strings without timezone shifts for stable display.
 const parseIsoDateString = (value: string): Date | null => {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
   if (!match) {
@@ -62,6 +64,7 @@ const parseIsoDateString = (value: string): Date | null => {
   return parsed;
 };
 
+// Render dates in Jalali format when possible, otherwise fall back to the raw text.
 const formatDate = (value: string): string => {
   const parsed = parseIsoDateString(value) ?? new Date(value);
   if (Number.isNaN(parsed.getTime())) {
@@ -70,10 +73,12 @@ const formatDate = (value: string): string => {
   return dateFormatter.format(parsed);
 };
 
+// Render date/time status in Jalali format for the status line.
 const formatDateTime = (date: Date): string => {
   return dateTimeFormatter.format(date);
 };
 
+// Normalize cell text for table output, including numeric and date formatting.
 const formatCell = (value: NormalizedCell, isDateCell: boolean): string => {
   if (value === null) {
     return '—';

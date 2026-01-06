@@ -3,6 +3,7 @@ import { appConfig } from '../config/runtime';
 /**
  * RTL Persian layout aligned with the v0.1 UI specification.
  */
+// Construct the RTL UI shell with localized numbers baked into the header metadata.
 export const layout = (): string => {
   const numberFormatter = new Intl.NumberFormat('fa-IR');
   const rowsPerPage = numberFormatter.format(appConfig.rowsPerPage);

@@ -1,4 +1,5 @@
 /* Base document styling for the Phase 2 shell. */
+/* Base theme tokens for the RTL Persian interface. */
 :root {
   color-scheme: light;
   font-family: "Vazirmatn", "Tahoma", sans-serif;
@@ -15,6 +16,7 @@ body {
   padding: 0;
 }
 
+/* Centered application container. */
 .shell {
   max-width: 1080px;
   margin: 48px auto;
@@ -24,6 +26,7 @@ body {
   gap: 24px;
 }
 
+/* Header with logo, title, and metadata tiles. */
 .header {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
@@ -103,6 +106,7 @@ body {
   margin-top: 0;
 }
 
+/* Status card showing last refresh and actions. */
 .status-card {
   display: flex;
   flex-direction: column;
@@ -200,6 +204,7 @@ body {
   background: #fbfcfe;
 }
 
+/* Highlight the newest row to match the UI specification. */
 .excel-row--latest {
   background: #fef7e6;
   font-weight: 600;
@@ -245,6 +250,7 @@ body {
   font-size: 12px;
 }
 
+/* Empty or error placeholder for data failures. */
 .empty-state {
   padding: 20px;
   border-radius: 12px;
@@ -336,6 +342,7 @@ body {
   align-items: flex-start;
 }
 
+/* Responsive adjustments for narrower screens. */
 @media (max-width: 768px) {
   .header {
     grid-template-columns: 1fr;
