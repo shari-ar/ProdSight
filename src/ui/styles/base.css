@@ -1,4 +1,5 @@
 /* Base document styling for the Phase 2 shell. */
+/* Base theme tokens for the RTL Persian interface. */
 :root {
   color-scheme: light;
   font-family: "Vazirmatn", "Tahoma", sans-serif;
@@ -15,19 +16,21 @@ body {
   padding: 0;
 }
 
+/* Centered application container. */
 .shell {
-  max-width: 960px;
+  max-width: 1080px;
   margin: 48px auto;
-  padding: 24px;
+  padding: 24px 24px 64px;
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
+/* Header with logo, title, and metadata tiles. */
 .header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 20px;
   padding: 16px 20px;
   border-radius: 16px;
   background: #ffffff;
@@ -35,21 +38,61 @@ body {
 }
 
 .logo {
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   border-radius: 12px;
-  object-fit: contain;
+  display: grid;
+  place-items: center;
   background: #f1f3f9;
+}
+
+.logo svg {
+  width: 100%;
+  height: 100%;
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .title {
   margin: 0;
-  font-size: 24px;
+  font-size: 26px;
 }
 
 .subtitle {
-  margin: 4px 0 0;
+  margin: 0;
   color: #5f6b85;
+}
+
+.header-meta {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #f8f9fc;
+  border: 1px solid #edf0f6;
+}
+
+.meta-label {
+  font-size: 12px;
+  color: #7c869c;
+}
+
+.meta-value {
+  font-size: 14px;
+  color: #1f2a44;
 }
 
 .card {
@@ -61,6 +104,39 @@ body {
 
 .card h2 {
   margin-top: 0;
+}
+
+/* Status card showing last refresh and actions. */
+.status-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.status-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.status-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status-time {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .card-header {
@@ -77,6 +153,9 @@ body {
   border-radius: 999px;
   background: #eef1f7;
   color: #4d5b7a;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .status--idle {
@@ -104,7 +183,7 @@ body {
 .excel-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 540px;
+  min-width: 640px;
 }
 
 .excel-table th,
@@ -125,6 +204,53 @@ body {
   background: #fbfcfe;
 }
 
+/* Highlight the newest row to match the UI specification. */
+.excel-row--latest {
+  background: #fef7e6;
+  font-weight: 600;
+  border-right: 4px solid #f5b544;
+}
+
+.excel-row--latest td {
+  border-bottom-color: #f3ddad;
+}
+
+.latest-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.latest-badge {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f5b544;
+  color: #3b2b0f;
+  font-weight: 700;
+}
+
+.table-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #7c869c;
+}
+
+.legend-badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f5b544;
+  color: #3b2b0f;
+  font-weight: 700;
+}
+
+.legend-text {
+  font-size: 12px;
+}
+
+/* Empty or error placeholder for data failures. */
 .empty-state {
   padding: 20px;
   border-radius: 12px;
@@ -132,6 +258,12 @@ body {
   color: #6b7690;
   background: #f8f9fc;
   text-align: center;
+}
+
+.empty-state--error {
+  border-color: #f0b4b4;
+  background: #fdeaea;
+  color: #9b1c1c;
 }
 
 .empty-state p {
@@ -158,6 +290,31 @@ body {
   outline-offset: 2px;
 }
 
+.secondary-button {
+  border: 1px solid #cfd6e6;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #2a375a;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.secondary-button:hover {
+  background: #f4f6fb;
+}
+
+.secondary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.secondary-button:focus-visible {
+  outline: 3px solid rgba(63, 92, 232, 0.3);
+  outline-offset: 2px;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -177,6 +334,26 @@ body {
 }
 
 .hint {
-  margin-bottom: 0;
+  margin: 0;
   color: #7c869c;
+}
+
+.data-card .card-header {
+  align-items: flex-start;
+}
+
+/* Responsive adjustments for narrower screens. */
+@media (max-width: 768px) {
+  .header {
+    grid-template-columns: 1fr;
+  }
+
+  .status-line {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .status-actions {
+    width: 100%;
+  }
 }
