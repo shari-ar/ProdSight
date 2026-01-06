@@ -16,7 +16,7 @@ export const layout = (): string => {
   return `
   <main class="shell">
     <header class="header">
-      <div class="logo" role="img" aria-label="لوگو">${appConfig.companyLogoSvg}</div>
+      <div class="logo" role="img" aria-label="لوگو"></div>
       <h1 class="title">${appConfig.pageTitle}</h1>
     </header>
 
