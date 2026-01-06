@@ -67,8 +67,8 @@ const parseIsoDateString = (value: string): Date | null => {
 
 // Render dates in Jalali format when possible, otherwise fall back to the raw text.
 const formatDate = (value: string): string => {
-  const parsed = parseIsoDateString(value) ?? new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
+  const parsed = parseIsoDateString(value);
+  if (!parsed) {
     return value;
   }
   return dateFormatter.format(parsed);
