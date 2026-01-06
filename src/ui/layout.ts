@@ -1,47 +1,72 @@
 import { appConfig } from '../config/runtime';
 
 /**
- * Minimal RTL layout for the Phase 2 scaffold.
+ * RTL Persian layout aligned with the v0.1 UI specification.
  */
 export const layout = (): string => `
   <main class="shell">
     <header class="header">
-      <span class="logo" role="img" aria-label="لوگو">${appConfig.companyLogoSvg}</span>
-      <div>
+      <div class="logo" role="img" aria-label="لوگو">${appConfig.companyLogoSvg}</div>
+      <div class="header-text">
         <h1 class="title">${appConfig.pageTitle}</h1>
-        <p class="subtitle">اسکلت اولیه برای برنامه آفلاین ProdSight</p>
+        <p class="subtitle">پایش برنامه تولید با داده‌های اکسل (آفلاین)</p>
+      </div>
+      <div class="header-meta">
+        <div class="meta-item">
+          <span class="meta-label">مسیر فایل</span>
+          <span class="meta-value mono">${appConfig.excelFilePath}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">بازه بروزرسانی</span>
+          <span class="meta-value mono">${appConfig.autoRefreshIntervalMs}ms</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">ردیف در صفحه</span>
+          <span class="meta-value mono">${appConfig.rowsPerPage}</span>
+        </div>
       </div>
     </header>
-    <section class="card">
-      <h2>وضعیت</h2>
-      <p>
-        مسیر فایل اکسل: <span class="mono">${appConfig.excelFilePath}</span>
-      </p>
-      <p>
-        بروزرسانی خودکار هر <span class="mono">${appConfig.autoRefreshIntervalMs}</span> میلی ثانیه
-      </p>
-      <p>
-        نمایش <span class="mono">${appConfig.rowsPerPage}</span> ردیف در هر صفحه
-      </p>
-      <p class="hint">این خروجی یک نمونه مینیمال برای فاز ۲ است.</p>
-    </section>
-    <section class="card" aria-live="polite">
-      <div class="card-header">
-        <h2>داده‌های اکسل</h2>
-        <span id="excel-status" class="status">در حال بارگذاری...</span>
+
+    <section class="card status-card" aria-live="polite">
+      <div class="status-line">
+        <div class="status-info">
+          <div class="status-time">
+            <span class="meta-label">آخرین بروزرسانی</span>
+            <span id="excel-last-refresh" class="meta-value mono">—</span>
+          </div>
+          <span id="excel-status" class="status status--idle">در حال بارگذاری...</span>
+        </div>
+        <div class="status-actions">
+          <button id="excel-refresh" class="secondary-button" type="button" disabled>
+            بروزرسانی دستی
+          </button>
+          <button id="excel-browse" class="primary-button" type="button">
+            انتخاب فایل اکسل
+          </button>
+          <input
+            id="excel-file-input"
+            class="sr-only"
+            type="file"
+            accept=".xlsx,.xls"
+          />
+        </div>
       </div>
       <p id="excel-summary" class="hint">در انتظار دریافت داده از فایل اکسل.</p>
+    </section>
+
+    <section class="card data-card">
+      <div class="card-header">
+        <div>
+          <h2>گزارش تولید</h2>
+          <p class="hint">آخرین وضعیت تولید به صورت راست‌به‌چپ نمایش داده می‌شود.</p>
+        </div>
+        <div class="table-legend">
+          <span class="legend-badge">واپَسین</span>
+          <span class="legend-text">جدیدترین ردیف</span>
+        </div>
+      </div>
       <div id="excel-empty" class="empty-state" hidden>
-        <p>هنوز داده‌ای برای نمایش وجود ندارد.</p>
-        <button id="excel-browse" class="primary-button" type="button">
-          انتخاب فایل اکسل
-        </button>
-        <input
-          id="excel-file-input"
-          class="sr-only"
-          type="file"
-          accept=".xlsx,.xls"
-        />
+        <p>داده‌ای برای نمایش وجود ندارد. مسیر فایل را بررسی کنید.</p>
       </div>
       <div id="excel-table" class="table-wrapper" hidden></div>
     </section>

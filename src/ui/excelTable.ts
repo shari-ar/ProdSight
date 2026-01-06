@@ -5,6 +5,7 @@ type ExcelTableElements = {
   summary: HTMLElement;
   emptyState: HTMLElement;
   tableWrapper: HTMLElement;
+  lastRefresh: HTMLElement;
 };
 
 const getExcelTableElements = (): ExcelTableElements => {
@@ -12,12 +13,13 @@ const getExcelTableElements = (): ExcelTableElements => {
   const summary = document.getElementById('excel-summary');
   const emptyState = document.getElementById('excel-empty');
   const tableWrapper = document.getElementById('excel-table');
+  const lastRefresh = document.getElementById('excel-last-refresh');
 
-  if (!status || !summary || !emptyState || !tableWrapper) {
+  if (!status || !summary || !emptyState || !tableWrapper || !lastRefresh) {
     throw new Error('Excel table elements are missing from the layout.');
   }
 
-  return { status, summary, emptyState, tableWrapper };
+  return { status, summary, emptyState, tableWrapper, lastRefresh };
 };
 
 const setStatus = (elements: ExcelTableElements, text: string, tone: 'idle' | 'success' | 'error') => {
@@ -26,14 +28,31 @@ const setStatus = (elements: ExcelTableElements, text: string, tone: 'idle' | 's
   elements.status.classList.add(`status--${tone}`);
 };
 
-const formatCell = (value: NormalizedCell): string => {
+const formatDate = (value: string): string => {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return value;
+  }
+  return new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
+    dateStyle: 'medium',
+  }).format(parsed);
+};
+
+const formatDateTime = (date: Date): string => {
+  return new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(date);
+};
+
+const formatCell = (value: NormalizedCell, isDateCell: boolean): string => {
   if (value === null) {
     return '—';
   }
   if (typeof value === 'number') {
     return new Intl.NumberFormat('fa-IR').format(value);
   }
-  return value;
+  return isDateCell ? formatDate(value) : value;
 };
 
 const buildTable = (data: ExcelData): HTMLTableElement => {
@@ -51,19 +70,50 @@ const buildTable = (data: ExcelData): HTMLTableElement => {
   table.appendChild(thead);
 
   const tbody = document.createElement('tbody');
+  const latestTimestamp =
+    data.rows.length > 0
+      ? Math.max(...data.rows.map((row) => row.date.getTime()))
+      : null;
+
   data.rows.forEach((row) => {
-    tbody.appendChild(buildBodyRow(row, data.headers));
+    const isLatest = latestTimestamp !== null && row.date.getTime() === latestTimestamp;
+    tbody.appendChild(buildBodyRow(row, data.headers, data.dateHeader, isLatest));
   });
   table.appendChild(tbody);
 
   return table;
 };
 
-const buildBodyRow = (row: NormalizedRow, headers: string[]): HTMLTableRowElement => {
+const buildBodyRow = (
+  row: NormalizedRow,
+  headers: string[],
+  dateHeader: string,
+  isLatest: boolean,
+): HTMLTableRowElement => {
   const tr = document.createElement('tr');
+  tr.className = isLatest ? 'excel-row excel-row--latest' : 'excel-row';
   headers.forEach((header) => {
     const td = document.createElement('td');
-    td.textContent = formatCell(row.cells[header] ?? null);
+    const isDateCell = header === dateHeader;
+    const value = formatCell(row.cells[header] ?? null, isDateCell);
+
+    if (isLatest && isDateCell) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'latest-cell';
+
+      const dateSpan = document.createElement('span');
+      dateSpan.textContent = value;
+
+      const badge = document.createElement('span');
+      badge.className = 'latest-badge';
+      badge.textContent = 'واپَسین';
+
+      wrapper.appendChild(dateSpan);
+      wrapper.appendChild(badge);
+      td.appendChild(wrapper);
+    } else {
+      td.textContent = value;
+    }
     tr.appendChild(td);
   });
   return tr;
@@ -73,6 +123,7 @@ export const renderExcelLoadingState = (): void => {
   const elements = getExcelTableElements();
   setStatus(elements, 'در حال بارگذاری...', 'idle');
   elements.summary.textContent = 'در انتظار دریافت داده از فایل اکسل.';
+  elements.emptyState.classList.remove('empty-state--error');
   elements.emptyState.hidden = true;
   elements.tableWrapper.hidden = true;
   elements.tableWrapper.innerHTML = '';
@@ -82,6 +133,8 @@ export const renderExcelErrorState = (message: string): void => {
   const elements = getExcelTableElements();
   setStatus(elements, 'خطا در بارگذاری', 'error');
   elements.summary.textContent = message;
+  elements.lastRefresh.textContent = '—';
+  elements.emptyState.classList.add('empty-state--error');
   elements.emptyState.hidden = false;
   elements.tableWrapper.hidden = true;
   elements.tableWrapper.innerHTML = '';
@@ -92,6 +145,8 @@ export const renderExcelTable = (data: ExcelData): void => {
   if (data.rows.length === 0) {
     setStatus(elements, 'بدون داده', 'idle');
     elements.summary.textContent = 'هیچ ردیفی در فایل اکسل یافت نشد.';
+    elements.lastRefresh.textContent = formatDateTime(new Date());
+    elements.emptyState.classList.remove('empty-state--error');
     elements.emptyState.hidden = false;
     elements.tableWrapper.hidden = true;
     elements.tableWrapper.innerHTML = '';
@@ -101,6 +156,8 @@ export const renderExcelTable = (data: ExcelData): void => {
   const table = buildTable(data);
   setStatus(elements, 'نمایش داده‌ها', 'success');
   elements.summary.textContent = `نمایش ${data.rows.length} ردیف از فایل اکسل.`;
+  elements.lastRefresh.textContent = formatDateTime(new Date());
+  elements.emptyState.classList.remove('empty-state--error');
   elements.emptyState.hidden = true;
   elements.tableWrapper.hidden = false;
   elements.tableWrapper.innerHTML = '';
