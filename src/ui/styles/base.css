@@ -35,8 +35,9 @@ body {
 /* Header card featuring brand and title. */
 .header {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 20px;
+  align-items: center;
   padding: 20px 24px;
   border-radius: 20px;
   background: linear-gradient(140deg, #ffffff 0%, #f6f8ff 60%, #f0f4ff 100%);
