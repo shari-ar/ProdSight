@@ -4,7 +4,7 @@ import { logger } from '../utils/logger';
 /**
  * RTL Persian layout aligned with the v0.1 UI specification.
  */
-// Construct the RTL UI shell with localized numbers baked into the header metadata.
+// Construct the RTL UI shell with a formal, metadata-free header.
 export const layout = (): string => {
   logger.info('Building RTL layout shell.', {
     title: appConfig.pageTitle,
