@@ -187,6 +187,10 @@ const fetchExcelArrayBuffer = async (filePath: string): Promise<ArrayBuffer> => 
 /** Parse the first worksheet and return normalized Excel data. */
 const parseWorkbook = (data: ArrayBuffer): ExcelData => {
   const workbook = XLSX.read(data, { type: 'array', cellDates: true });
+  if (workbook.SheetNames.length !== 1) {
+    throw new ExcelDataError('فایل اکسل باید فقط یک برگه داشته باشد.');
+  }
+
   const [firstSheetName] = workbook.SheetNames;
   if (!firstSheetName) {
     throw new ExcelDataError('هیچ برگه‌ای در فایل اکسل وجود ندارد.');
