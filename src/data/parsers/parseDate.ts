@@ -1,4 +1,6 @@
+import { isValidJalaaliDate, toGregorian } from 'jalaali-js';
 import * as XLSX from 'xlsx';
+import { logger } from '../../utils/logger';
 import { cleanText } from './cleanText';
 import { normalizeDigits } from './digits';
 
@@ -32,6 +34,42 @@ const buildDate = (year: number, month: number, day: number): Date | null => {
   return toDateOnly(date);
 };
 
+/** Prefer Jalali conversion when the year suggests a Persian date. */
+const isLikelyJalaaliYear = (year: number): boolean => year >= 1300 && year <= 1499;
+
+/** Convert valid Jalali date components to a Gregorian Date. */
+const buildJalaaliDate = (year: number, month: number, day: number): Date | null => {
+  if (!isValidJalaaliDate(year, month, day)) {
+    return null;
+  }
+  const { gy, gm, gd } = toGregorian(year, month, day);
+  return buildDate(gy, gm, gd);
+};
+
+/**
+ * Build a Gregorian date, then fall back to a Jalali conversion when either the
+ * year looks Persian or the Gregorian build fails to validate.
+ */
+const buildBestDate = (year: number, month: number, day: number): Date | null => {
+  // Treat valid Gregorian dates as authoritative unless the year strongly suggests Jalali.
+  const gregorianDate = buildDate(year, month, day);
+  if (gregorianDate && !isLikelyJalaaliYear(year)) {
+    return gregorianDate;
+  }
+
+  const jalaliDate = buildJalaaliDate(year, month, day);
+  if (jalaliDate) {
+    logger.debug('Interpreted date as Jalali and converted to Gregorian.', {
+      year,
+      month,
+      day,
+    });
+    return jalaliDate;
+  }
+
+  return gregorianDate;
+};
+
 /** Parse YYYY-MM-DD, DD/MM/YYYY, or MM/DD/YYYY formatted date parts. */
 const parseDateParts = (parts: string[]): Date | null => {
   if (parts.length !== 3) {
@@ -45,18 +83,18 @@ const parseDateParts = (parts: string[]): Date | null => {
   }
 
   if (first.length === 4) {
-    return buildDate(numbers[0], numbers[1], numbers[2]);
+    return buildBestDate(numbers[0], numbers[1], numbers[2]);
   }
 
   if (third.length === 4) {
     const [partA, partB, year] = numbers;
     if (partA > 12 && partB <= 12) {
-      return buildDate(year, partB, partA);
+      return buildBestDate(year, partB, partA);
     }
     if (partB > 12 && partA <= 12) {
-      return buildDate(year, partA, partB);
+      return buildBestDate(year, partA, partB);
     }
-    return buildDate(year, partB, partA);
+    return buildBestDate(year, partB, partA);
   }
 
   return null;
