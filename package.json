@@ -8,8 +8,8 @@
     "dev": "vite",
     "preview": "vite preview",
     "lint:env": "bash scripts/validate-env.sh",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "vitest run --config vitest.config.ts",
+    "test:watch": "vitest --config vitest.config.ts"
   },
   "dependencies": {
     "dotenv": "17.2.3",
