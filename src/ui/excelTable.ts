@@ -10,12 +10,14 @@ type ExcelTableElements = {
   refreshButton: HTMLButtonElement;
 };
 
+// Tailwind utility sets for status badge tone updates.
 const statusToneClasses = {
   idle: ['bg-slate-100', 'text-slate-600'],
   success: ['bg-emerald-100', 'text-emerald-700'],
   error: ['bg-red-100', 'text-red-700'],
 } as const;
 
+// Tailwind utilities applied to the empty-state block on errors.
 const emptyStateErrorClasses = ['border-red-200', 'bg-red-50', 'text-red-700'] as const;
 
 // Cached formatters keep rendering fast and consistent for Persian locale output.
@@ -53,6 +55,7 @@ const getExcelTableElements = (): ExcelTableElements | null => {
   return { status, emptyState, tableWrapper, lastRefresh, refreshButton };
 };
 
+// Update the status badge text and tone classes in a single pass.
 const setStatus = (elements: ExcelTableElements, text: string, tone: 'idle' | 'success' | 'error') => {
   elements.status.textContent = text;
   const allToneClasses = Object.values(statusToneClasses).flat();
@@ -102,10 +105,12 @@ const formatCell = (value: NormalizedCell, isDateCell: boolean): string => {
   return isDateCell ? formatDate(value) : value;
 };
 
+// Build the full Excel table with consistent Tailwind utilities.
 const buildTable = (data: ExcelData): HTMLTableElement => {
   const table = document.createElement('table');
   table.className = 'min-w-[640px] w-full border-collapse text-sm text-slate-800';
 
+  // Header row (sticky for long tables).
   const thead = document.createElement('thead');
   const headerRow = document.createElement('tr');
   data.headers.forEach((header) => {
@@ -118,6 +123,7 @@ const buildTable = (data: ExcelData): HTMLTableElement => {
   thead.appendChild(headerRow);
   table.appendChild(thead);
 
+  // Body rows (latest row highlighted when applicable).
   const tbody = document.createElement('tbody');
   const sortedRows = [...data.rows].sort((a, b) => b.date.getTime() - a.date.getTime());
   const latestTimestamp = sortedRows.length > 0 ? sortedRows[0].date.getTime() : null;
@@ -131,6 +137,7 @@ const buildTable = (data: ExcelData): HTMLTableElement => {
   return table;
 };
 
+// Build a single table row, with a badge for the most recent date cell.
 const buildBodyRow = (
   row: NormalizedRow,
   headers: string[],

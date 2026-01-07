@@ -1,7 +1,9 @@
+/* Tailwind layers: base styles, component overrides, and utilities. */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Global RTL defaults and shared typography tokens. */
 @layer base {
   :root {
     color-scheme: light;
@@ -29,6 +31,7 @@
   }
 }
 
+/* Utility helpers for direction overrides. */
 @layer utilities {
   .direction-ltr {
     direction: ltr;
