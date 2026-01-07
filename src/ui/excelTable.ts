@@ -1,4 +1,5 @@
 import type { ExcelData, NormalizedCell, NormalizedRow } from '../data/model';
+import { AppError } from '../data/errors';
 import { logger } from '../utils/logger';
 
 type ExcelTableElements = {
@@ -19,7 +20,7 @@ const dateTimeFormatter = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
   timeStyle: 'short',
 });
 
-const getExcelTableElements = (): ExcelTableElements => {
+const getExcelTableElements = (): ExcelTableElements | null => {
   const status = document.getElementById('excel-status');
   const emptyState = document.getElementById('excel-empty');
   const tableWrapper = document.getElementById('excel-table');
@@ -33,7 +34,12 @@ const getExcelTableElements = (): ExcelTableElements => {
     !lastRefresh ||
     !(refreshButton instanceof HTMLButtonElement)
   ) {
-    throw new Error('Excel table elements are missing from the layout.');
+    const error = new AppError({
+      code: 'UI_MISSING_EXCEL_ELEMENTS',
+      message: 'عناصر جدول اکسل در چیدمان صفحه یافت نشدند.',
+    });
+    logger.error('Excel table elements are missing from the layout.', { error });
+    return null;
   }
 
   return { status, emptyState, tableWrapper, lastRefresh, refreshButton };
@@ -151,6 +157,9 @@ const buildBodyRow = (
 
 export const renderExcelLoadingState = (): void => {
   const elements = getExcelTableElements();
+  if (!elements) {
+    return;
+  }
   logger.info('Rendering Excel loading state.');
   setStatus(elements, 'در حال بارگذاری...', 'idle');
   elements.lastRefresh.textContent = '—';
@@ -166,12 +175,18 @@ export const renderExcelLoadingState = (): void => {
  */
 export const setRefreshButtonDisabled = (disabled: boolean): void => {
   const elements = getExcelTableElements();
+  if (!elements) {
+    return;
+  }
   elements.refreshButton.disabled = disabled;
   logger.debug('Excel refresh button state updated.', { disabled });
 };
 
 export const renderExcelErrorState = (message: string): void => {
   const elements = getExcelTableElements();
+  if (!elements) {
+    return;
+  }
   logger.warn('Rendering Excel error state.', { message });
   setStatus(elements, 'خطا در بارگذاری', 'error');
   elements.lastRefresh.textContent = '—';
@@ -184,6 +199,9 @@ export const renderExcelErrorState = (message: string): void => {
 
 export const renderExcelTable = (data: ExcelData): void => {
   const elements = getExcelTableElements();
+  if (!elements) {
+    return;
+  }
   if (data.rows.length === 0) {
     logger.info('Rendering Excel empty state.');
     setStatus(elements, 'بدون داده', 'idle');
