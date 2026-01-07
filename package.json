@@ -7,7 +7,9 @@
     "build": "vite build && tsx scripts/pack-single-html.ts",
     "dev": "vite",
     "preview": "vite preview",
-    "lint:env": "bash scripts/validate-env.sh"
+    "lint:env": "bash scripts/validate-env.sh",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "dotenv": "17.2.3",
