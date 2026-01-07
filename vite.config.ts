@@ -19,4 +19,9 @@ export default defineConfig({
       legalComments: 'none',
     },
   },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'es2020',
+    },
+  },
 });
