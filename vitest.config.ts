@@ -14,11 +14,16 @@ export default defineConfig({
     __APP_CONFIG__: JSON.stringify(testAppConfig),
   },
   test: {
+    clearMocks: true,
     environment: 'node',
     include: ['src/tests/**/*.test.ts'],
+    exclude: ['node_modules', 'dist', 'coverage'],
     restoreMocks: true,
   },
   coverage: {
+    all: true,
+    include: ['src/**/*.ts'],
+    exclude: ['src/tests/**', 'scripts/**', '**/*.d.ts'],
     provider: 'v8',
     reporter: ['text', 'html', 'lcov'],
     reportsDirectory: './coverage',
