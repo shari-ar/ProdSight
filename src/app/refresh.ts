@@ -60,11 +60,11 @@ const clearErrorState = (): void => {
   lastErrorMessage = null;
 };
 
-const handleRefreshError = (error: unknown): void => {
+const handleRefreshError = (error: unknown, forceRender = false): void => {
   const message = error instanceof Error ? error.message : 'بارگذاری فایل اکسل ناموفق بود.';
   logger.error('Excel refresh failed.', { error });
   setRefreshButtonDisabled(false);
-  if (shouldShowError(message)) {
+  if (forceRender || shouldShowError(message)) {
     renderExcelErrorState(message);
   }
 };
@@ -124,7 +124,7 @@ export const refreshNow = (fileOverride?: File): void => {
       return;
     }
     await refreshFromConfiguredPath(true);
-  }).catch(handleRefreshError);
+  }).catch((error) => handleRefreshError(error, true));
 };
 
 export const setActiveExcelFile = (file: File): void => {
