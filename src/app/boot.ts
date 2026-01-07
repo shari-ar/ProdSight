@@ -2,7 +2,7 @@ import { renderShell } from '../ui/render';
 import { appConfig } from '../config/runtime';
 import { logger } from '../utils/logger';
 import { renderExcelLoadingState } from '../ui/excelTable';
-import { initializeRefresh, refreshNow } from './refresh';
+import { initializeRefresh, refreshNow, setActiveExcelFile } from './refresh';
 
 /**
  * Initializes document metadata and renders the minimal UI shell.
@@ -41,8 +41,9 @@ const setupExcelBrowse = (): void => {
     }
 
     renderExcelLoadingState();
+    setActiveExcelFile(file);
     refreshNow(file);
-    initializeRefresh(file);
+    initializeRefresh();
     fileInput.value = '';
   });
 };
@@ -53,6 +54,6 @@ const setupManualRefresh = (): void => {
     return;
   }
   refreshButton.addEventListener('click', () => {
-    refreshNow();
+    window.location.reload();
   });
 };

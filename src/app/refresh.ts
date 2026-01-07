@@ -8,10 +8,13 @@ import {
 } from '../ui/excelTable';
 import { logger } from '../utils/logger';
 
+type RefreshSource =
+  | { kind: 'path' }
+  | { kind: 'file'; file: File };
+
 type RefreshSignature = {
   value: string;
-  source: 'path' | 'file';
-  file?: File;
+  source: RefreshSource;
 };
 
 let lastSignature: RefreshSignature | null = null;
@@ -36,7 +39,13 @@ const updateSignature = (signature: RefreshSignature): void => {
 };
 
 const isSignatureMatch = (signature: RefreshSignature): boolean => {
-  return Boolean(lastSignature && signature.value === lastSignature.value && signature.source === lastSignature.source);
+  if (!lastSignature) {
+    return false;
+  }
+  const isSameSource =
+    signature.source.kind === lastSignature.source.kind &&
+    (signature.source.kind !== 'file' || signature.source.file === lastSignature.source.file);
+  return isSameSource && signature.value === lastSignature.value;
 };
 
 const shouldShowError = (message: string): boolean => {
@@ -62,40 +71,37 @@ const handleRefreshError = (error: unknown): void => {
 
 const refreshFromConfiguredPath = async (force = false): Promise<void> => {
   const { data, signature } = await loadExcelDataWithSignature(appConfig.excelFilePath);
-  if (!force && isSignatureMatch({ value: signature, source: 'path' })) {
+  if (!force && isSignatureMatch({ value: signature, source: { kind: 'path' } })) {
     logger.info('Excel refresh skipped (no change detected).');
     setRefreshButtonDisabled(false);
     return;
   }
-  updateSignature({ value: signature, source: 'path' });
+  updateSignature({ value: signature, source: { kind: 'path' } });
   clearErrorState();
   renderExcelTable(data);
 };
 
 const refreshFromFile = async (file: File, force = false): Promise<void> => {
   const { data, signature } = await loadExcelFileWithSignature(file);
-  if (!force && isSignatureMatch({ value: signature, source: 'file' })) {
+  if (!force && isSignatureMatch({ value: signature, source: { kind: 'file', file } })) {
     logger.info('Excel refresh skipped (no change detected for file).');
     setRefreshButtonDisabled(false);
     return;
   }
-  updateSignature({ value: signature, source: 'file', file });
+  updateSignature({ value: signature, source: { kind: 'file', file } });
   clearErrorState();
   renderExcelTable(data);
 };
 
-export const initializeRefresh = (initialFile?: File): void => {
-  if (initialFile) {
-    updateSignature({ value: `${initialFile.lastModified}-${initialFile.size}`, source: 'file', file: initialFile });
-  }
+export const initializeRefresh = (): void => {
   if (refreshTimer !== null) {
     window.clearInterval(refreshTimer);
   }
   refreshTimer = window.setInterval(() => {
     void runWithExclusiveLock(async () => {
       setRefreshButtonDisabled(true);
-      if (lastSignature?.source === 'file' && lastSignature.file) {
-        await refreshFromFile(lastSignature.file);
+      if (lastSignature?.source.kind === 'file') {
+        await refreshFromFile(lastSignature.source.file);
       } else {
         await refreshFromConfiguredPath();
       }
@@ -113,10 +119,14 @@ export const refreshNow = (fileOverride?: File): void => {
       await refreshFromFile(fileOverride, true);
       return;
     }
-    if (lastSignature?.source === 'file' && lastSignature.file) {
-      await refreshFromFile(lastSignature.file, true);
+    if (lastSignature?.source.kind === 'file') {
+      await refreshFromFile(lastSignature.source.file, true);
       return;
     }
     await refreshFromConfiguredPath(true);
   }).catch(handleRefreshError);
+};
+
+export const setActiveExcelFile = (file: File): void => {
+  updateSignature({ value: `${file.lastModified}-${file.size}`, source: { kind: 'file', file } });
 };
