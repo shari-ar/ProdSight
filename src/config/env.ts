@@ -3,7 +3,7 @@ import path from 'node:path';
 import dotenv from 'dotenv';
 import { ZodError } from 'zod';
 import { envSchema } from './schema';
-import { AppError } from '../data/errors';
+import { AppError, ERROR_CODES } from '../data/errors';
 import type { AppConfig } from './types';
 
 // Source filename used for build-time configuration.
@@ -28,7 +28,7 @@ export const loadConfig = (): AppConfig => {
 
   if (!fs.existsSync(envPath)) {
     throw new AppError({
-      code: 'CONFIG_MISSING_ENV',
+      code: ERROR_CODES.ConfigMissingEnv,
       message: `فایل ${ENV_FILENAME} یافت نشد. پیکربندی شامل هر پنج مقدار الزامی است.`,
     });
   }
@@ -46,7 +46,7 @@ export const loadConfig = (): AppConfig => {
       extraKeys.length > 0 ? `کلیدهای اضافی مجاز نیستند: ${extraKeys.join(', ')}.` : '';
     const message = [missingMessage, extraMessage].filter(Boolean).join('\n');
     throw new AppError({
-      code: 'CONFIG_INVALID_KEYS',
+      code: ERROR_CODES.ConfigInvalidKeys,
       message: `پیکربندی ${ENV_FILENAME} نامعتبر است:\n${message}`,
     });
   }
@@ -55,7 +55,7 @@ export const loadConfig = (): AppConfig => {
   if (!result.success) {
     const message = formatZodError(result.error);
     throw new AppError({
-      code: 'CONFIG_INVALID_SCHEMA',
+      code: ERROR_CODES.ConfigInvalidSchema,
       message: `پیکربندی ${ENV_FILENAME} نامعتبر است:\n${message}`,
     });
   }
@@ -63,7 +63,7 @@ export const loadConfig = (): AppConfig => {
   const logoAssetPath = path.resolve(process.cwd(), result.data.COMPANY_LOGO_ASSET_PATH);
   if (!fs.existsSync(logoAssetPath)) {
     throw new AppError({
-      code: 'CONFIG_LOGO_MISSING',
+      code: ERROR_CODES.ConfigLogoMissing,
       message: `فایل لوگوی شرکت در مسیر ${logoAssetPath} یافت نشد.`,
     });
   }

@@ -1,5 +1,5 @@
 import type { ExcelData, NormalizedCell, NormalizedRow } from '../data/model';
-import { AppError } from '../data/errors';
+import { AppError, ERROR_CODES } from '../data/errors';
 import { logger } from '../utils/logger';
 
 type ExcelTableElements = {
@@ -35,7 +35,7 @@ const getExcelTableElements = (): ExcelTableElements | null => {
     !(refreshButton instanceof HTMLButtonElement)
   ) {
     const error = new AppError({
-      code: 'UI_MISSING_EXCEL_ELEMENTS',
+      code: ERROR_CODES.UiMissingExcelElements,
       message: 'عناصر جدول اکسل در چیدمان صفحه یافت نشدند.',
     });
     logger.error('Excel table elements are missing from the layout.', { error });
