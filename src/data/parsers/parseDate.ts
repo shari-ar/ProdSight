@@ -34,9 +34,7 @@ const buildDate = (year: number, month: number, day: number): Date | null => {
 };
 
 /** Prefer Jalali conversion when the year suggests a Persian date. */
-const isLikelyJalaaliYear = (year: number): boolean => {
-  return year >= 1300 && year <= 1499;
-};
+const isLikelyJalaaliYear = (year: number): boolean => year >= 1300 && year <= 1499;
 
 /** Convert valid Jalali date components to a Gregorian Date. */
 const buildJalaaliDate = (year: number, month: number, day: number): Date | null => {
@@ -47,15 +45,18 @@ const buildJalaaliDate = (year: number, month: number, day: number): Date | null
   return buildDate(gy, gm, gd);
 };
 
-/** Build a date, falling back to Gregorian when Jalali parsing fails. */
+/**
+ * Build a Gregorian date, then fall back to a Jalali conversion when either the
+ * year looks Persian or the Gregorian build fails to validate.
+ */
 const buildBestDate = (year: number, month: number, day: number): Date | null => {
-  if (isLikelyJalaaliYear(year)) {
-    const jalaliDate = buildJalaaliDate(year, month, day);
-    if (jalaliDate) {
-      return jalaliDate;
-    }
+  const gregorianDate = buildDate(year, month, day);
+  if (gregorianDate && !isLikelyJalaaliYear(year)) {
+    return gregorianDate;
   }
-  return buildDate(year, month, day);
+
+  const jalaliDate = buildJalaaliDate(year, month, day);
+  return jalaliDate ?? gregorianDate;
 };
 
 /** Parse YYYY-MM-DD, DD/MM/YYYY, or MM/DD/YYYY formatted date parts. */
