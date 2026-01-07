@@ -25,6 +25,7 @@ export default defineConfig({
     include: ['src/tests/**/*.test.ts'],
     exclude: ['node_modules', 'dist', 'coverage'],
     restoreMocks: true,
+    setupFiles: ['src/tests/setup.ts'],
   },
   coverage: {
     // Collect coverage for source files while excluding tests and generated artifacts.

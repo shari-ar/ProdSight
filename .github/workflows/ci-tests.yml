@@ -32,6 +32,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Log runtime versions for easier debugging of CI failures.
+      - name: Log runtime versions
+        run: |
+          node --version
+          npm --version
+          npx vitest --version
+
       # Execute the CI-optimized Vitest run with coverage enabled.
       - name: Run unit tests with coverage
         run: npm run test:ci
