@@ -18,4 +18,9 @@ export default defineConfig({
     include: ['src/tests/**/*.test.ts'],
     restoreMocks: true,
   },
+  coverage: {
+    provider: 'v8',
+    reporter: ['text', 'html', 'lcov'],
+    reportsDirectory: './coverage',
+  },
 });
