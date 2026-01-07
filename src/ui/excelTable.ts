@@ -10,6 +10,16 @@ type ExcelTableElements = {
   refreshButton: HTMLButtonElement;
 };
 
+// Tailwind utility sets for status badge tone updates.
+const statusToneClasses = {
+  idle: ['bg-slate-100', 'text-slate-600'],
+  success: ['bg-emerald-100', 'text-emerald-700'],
+  error: ['bg-red-100', 'text-red-700'],
+} as const;
+
+// Tailwind utilities applied to the empty-state block on errors.
+const emptyStateErrorClasses = ['border-red-200', 'bg-red-50', 'text-red-700'] as const;
+
 // Cached formatters keep rendering fast and consistent for Persian locale output.
 const numberFormatter = new Intl.NumberFormat('fa-IR');
 const dateFormatter = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
@@ -45,10 +55,12 @@ const getExcelTableElements = (): ExcelTableElements | null => {
   return { status, emptyState, tableWrapper, lastRefresh, refreshButton };
 };
 
+// Update the status badge text and tone classes in a single pass.
 const setStatus = (elements: ExcelTableElements, text: string, tone: 'idle' | 'success' | 'error') => {
   elements.status.textContent = text;
-  elements.status.classList.remove('status--idle', 'status--success', 'status--error');
-  elements.status.classList.add(`status--${tone}`);
+  const allToneClasses = Object.values(statusToneClasses).flat();
+  elements.status.classList.remove(...allToneClasses);
+  elements.status.classList.add(...statusToneClasses[tone]);
 };
 
 // Parse ISO date-only strings without timezone shifts for stable display.
@@ -93,20 +105,25 @@ const formatCell = (value: NormalizedCell, isDateCell: boolean): string => {
   return isDateCell ? formatDate(value) : value;
 };
 
+// Build the full Excel table with consistent Tailwind utilities.
 const buildTable = (data: ExcelData): HTMLTableElement => {
   const table = document.createElement('table');
-  table.className = 'excel-table';
+  table.className = 'min-w-[640px] w-full border-collapse text-sm text-slate-800';
 
+  // Header row (sticky for long tables).
   const thead = document.createElement('thead');
   const headerRow = document.createElement('tr');
   data.headers.forEach((header) => {
     const th = document.createElement('th');
+    th.className =
+      'sticky top-0 z-10 bg-slate-100 px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-600';
     th.textContent = header;
     headerRow.appendChild(th);
   });
   thead.appendChild(headerRow);
   table.appendChild(thead);
 
+  // Body rows (latest row highlighted when applicable).
   const tbody = document.createElement('tbody');
   const sortedRows = [...data.rows].sort((a, b) => b.date.getTime() - a.date.getTime());
   const latestTimestamp = sortedRows.length > 0 ? sortedRows[0].date.getTime() : null;
@@ -120,6 +137,7 @@ const buildTable = (data: ExcelData): HTMLTableElement => {
   return table;
 };
 
+// Build a single table row, with a badge for the most recent date cell.
 const buildBodyRow = (
   row: NormalizedRow,
   headers: string[],
@@ -127,21 +145,22 @@ const buildBodyRow = (
   isLatest: boolean,
 ): HTMLTableRowElement => {
   const tr = document.createElement('tr');
-  tr.className = isLatest ? 'excel-row excel-row--latest' : 'excel-row';
+  tr.className = isLatest ? 'border-r-4 border-amber-400 bg-amber-50 font-semibold' : 'even:bg-slate-50';
   headers.forEach((header) => {
     const td = document.createElement('td');
+    td.className = 'border-b border-slate-100 px-4 py-3 text-right';
     const isDateCell = header === dateHeader;
     const value = formatCell(row.cells[header] ?? null, isDateCell);
 
     if (isLatest && isDateCell) {
       const wrapper = document.createElement('div');
-      wrapper.className = 'latest-cell';
+      wrapper.className = 'inline-flex items-center gap-2';
 
       const dateSpan = document.createElement('span');
       dateSpan.textContent = value;
 
       const badge = document.createElement('span');
-      badge.className = 'latest-badge';
+      badge.className = 'rounded-full bg-amber-400 px-2 py-0.5 text-[11px] font-semibold text-amber-900';
       badge.textContent = 'واپَسین';
 
       wrapper.appendChild(dateSpan);
@@ -164,7 +183,7 @@ export const renderExcelLoadingState = (): void => {
   setStatus(elements, 'در حال بارگذاری...', 'idle');
   elements.lastRefresh.textContent = '—';
   elements.refreshButton.disabled = true;
-  elements.emptyState.classList.remove('empty-state--error');
+  elements.emptyState.classList.remove(...emptyStateErrorClasses);
   elements.emptyState.hidden = true;
   elements.tableWrapper.hidden = true;
   elements.tableWrapper.innerHTML = '';
@@ -191,7 +210,7 @@ export const renderExcelErrorState = (message: string): void => {
   setStatus(elements, 'خطا در بارگذاری', 'error');
   elements.lastRefresh.textContent = '—';
   elements.refreshButton.disabled = false;
-  elements.emptyState.classList.add('empty-state--error');
+  elements.emptyState.classList.add(...emptyStateErrorClasses);
   elements.emptyState.hidden = false;
   elements.tableWrapper.hidden = true;
   elements.tableWrapper.innerHTML = '';
@@ -207,7 +226,7 @@ export const renderExcelTable = (data: ExcelData): void => {
     setStatus(elements, 'بدون داده', 'idle');
     elements.lastRefresh.textContent = formatDateTime(new Date());
     elements.refreshButton.disabled = false;
-    elements.emptyState.classList.remove('empty-state--error');
+    elements.emptyState.classList.remove(...emptyStateErrorClasses);
     elements.emptyState.hidden = false;
     elements.tableWrapper.hidden = true;
     elements.tableWrapper.innerHTML = '';
@@ -223,7 +242,7 @@ export const renderExcelTable = (data: ExcelData): void => {
   setStatus(elements, 'نمایش داده‌ها', 'success');
   elements.lastRefresh.textContent = formatDateTime(new Date());
   elements.refreshButton.disabled = false;
-  elements.emptyState.classList.remove('empty-state--error');
+  elements.emptyState.classList.remove(...emptyStateErrorClasses);
   elements.emptyState.hidden = true;
   elements.tableWrapper.hidden = false;
   elements.tableWrapper.innerHTML = '';
