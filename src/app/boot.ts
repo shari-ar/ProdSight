@@ -1,8 +1,8 @@
 import { renderShell } from '../ui/render';
 import { appConfig } from '../config/runtime';
-import { loadExcelData, loadExcelFile } from '../data/excelReader';
 import { logger } from '../utils/logger';
-import { renderExcelErrorState, renderExcelLoadingState, renderExcelTable } from '../ui/excelTable';
+import { renderExcelLoadingState } from '../ui/excelTable';
+import { initializeRefresh, refreshNow, setActiveExcelFile } from './refresh';
 
 /**
  * Initializes document metadata and renders the minimal UI shell.
@@ -14,26 +14,17 @@ export const boot = (): void => {
   renderShell();
   renderExcelLoadingState();
   setupExcelBrowse();
+  setupManualRefresh();
 
   logger.info('Starting Excel load.', { filePath: appConfig.excelFilePath });
 
-  void loadExcelData(appConfig.excelFilePath)
-    .then((data) => {
-      logger.info('Excel data loaded successfully.', {
-        headers: data.headers,
-        rows: data.rows.length,
-      });
-      renderExcelTable(data);
-    })
-    .catch((error) => {
-      logger.error('Failed to load Excel data.', {
-        error,
-      });
-      const message = error instanceof Error ? error.message : 'بارگذاری فایل اکسل ناموفق بود.';
-      renderExcelErrorState(message);
-    });
+  refreshNow();
+  initializeRefresh();
 };
 
+/**
+ * Wire the manual file picker to load Excel data via the refresh pipeline.
+ */
 const setupExcelBrowse = (): void => {
   const browseButton = document.getElementById('excel-browse');
   const fileInput = document.getElementById('excel-file-input');
@@ -52,24 +43,28 @@ const setupExcelBrowse = (): void => {
       return;
     }
 
+    logger.info('Excel file selection detected in UI.', {
+      fileName: file.name,
+      fileSize: file.size,
+    });
     renderExcelLoadingState();
-    void loadExcelFile(file)
-      .then((data) => {
-        logger.info('Excel data loaded successfully from upload.', {
-          headers: data.headers,
-          rows: data.rows.length,
-        });
-        renderExcelTable(data);
-      })
-      .catch((error) => {
-        logger.error('Failed to load uploaded Excel data.', {
-          error,
-        });
-        const message = error instanceof Error ? error.message : 'بارگذاری فایل اکسل ناموفق بود.';
-        renderExcelErrorState(message);
-      })
-      .finally(() => {
-        fileInput.value = '';
-      });
+    setActiveExcelFile(file);
+    refreshNow(file);
+    initializeRefresh();
+    fileInput.value = '';
+  });
+};
+
+/**
+ * Manual refresh triggers a full reload for a clean file:// reset.
+ */
+const setupManualRefresh = (): void => {
+  const refreshButton = document.getElementById('excel-refresh');
+  if (!(refreshButton instanceof HTMLButtonElement)) {
+    return;
+  }
+  refreshButton.addEventListener('click', () => {
+    logger.info('Manual refresh requested; reloading page.');
+    window.location.reload();
   });
 };

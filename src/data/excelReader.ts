@@ -220,11 +220,51 @@ const parseWorkbook = (data: ArrayBuffer): ExcelData => {
   return { headers, dateHeader, rows };
 };
 
+/** Convert a buffer to a hex string for signature storage. */
+const bufferToHex = (buffer: ArrayBuffer): string => {
+  return Array.from(new Uint8Array(buffer))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+};
+
+/** Generate a stable SHA-256 signature for change detection. */
+const createBufferSignature = async (buffer: ArrayBuffer): Promise<string> => {
+  const digest = await crypto.subtle.digest('SHA-256', buffer);
+  const signature = bufferToHex(digest);
+  logger.debug('Excel signature generated for configured path.', {
+    signature,
+  });
+  return signature;
+};
+
+/** Generate a lightweight signature for user-selected files. */
+const createFileSignature = (file: File): string => {
+  const signature = `${file.lastModified}-${file.size}`;
+  logger.debug('Excel signature generated for uploaded file.', {
+    signature,
+    fileName: file.name,
+    fileSize: file.size,
+  });
+  return signature;
+};
+
 /** Public API for loading and parsing Excel data from a configured path. */
 export const loadExcelData = async (filePath: string): Promise<ExcelData> => {
   logger.debug('Loading Excel data.', { filePath });
   const buffer = await fetchExcelArrayBuffer(filePath);
   return parseWorkbook(buffer);
+};
+
+/**
+ * Load Excel data and return a content signature for change detection.
+ */
+export const loadExcelDataWithSignature = async (
+  filePath: string,
+): Promise<{ data: ExcelData; signature: string }> => {
+  logger.debug('Loading Excel data with signature.', { filePath });
+  const buffer = await fetchExcelArrayBuffer(filePath);
+  const signature = await createBufferSignature(buffer);
+  return { data: parseWorkbook(buffer), signature };
 };
 
 /** Public API for loading and parsing Excel data from a user-selected file. */
@@ -236,6 +276,27 @@ export const loadExcelFile = async (file: File): Promise<ExcelData> => {
   try {
     const buffer = await file.arrayBuffer();
     return parseWorkbook(buffer);
+  } catch (error) {
+    if (error instanceof ExcelDataError) {
+      throw error;
+    }
+    throw new ExcelDataError('بارگذاری فایل اکسل با خطا مواجه شد.');
+  }
+};
+
+/**
+ * Load Excel data from a file and return a signature for change detection.
+ */
+export const loadExcelFileWithSignature = async (
+  file: File,
+): Promise<{ data: ExcelData; signature: string }> => {
+  logger.debug('Loading Excel data from uploaded file with signature.', {
+    fileName: file.name,
+    fileSize: file.size,
+  });
+  try {
+    const buffer = await file.arrayBuffer();
+    return { data: parseWorkbook(buffer), signature: createFileSignature(file) };
   } catch (error) {
     if (error instanceof ExcelDataError) {
       throw error;
