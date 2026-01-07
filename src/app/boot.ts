@@ -43,6 +43,10 @@ const setupExcelBrowse = (): void => {
       return;
     }
 
+    logger.info('Excel file selection detected in UI.', {
+      fileName: file.name,
+      fileSize: file.size,
+    });
     renderExcelLoadingState();
     setActiveExcelFile(file);
     refreshNow(file);
@@ -60,6 +64,7 @@ const setupManualRefresh = (): void => {
     return;
   }
   refreshButton.addEventListener('click', () => {
+    logger.info('Manual refresh requested; reloading page.');
     window.location.reload();
   });
 };

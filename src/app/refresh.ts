@@ -52,6 +52,10 @@ const runWithExclusiveLock = async (task: () => Promise<void>): Promise<void> =>
  */
 const updateSignature = (signature: RefreshSignature): void => {
   lastSignature = signature;
+  logger.debug('Excel refresh signature updated.', {
+    source: signature.source.kind,
+    signature: signature.value,
+  });
 };
 
 /**
@@ -101,6 +105,7 @@ const handleRefreshError = (error: unknown, forceRender = false): void => {
  * Refresh from the configured Excel path with optional forced reload.
  */
 const refreshFromConfiguredPath = async (force = false): Promise<void> => {
+  logger.debug('Refreshing Excel from configured path.', { force });
   const { data, signature } = await loadExcelDataWithSignature(appConfig.excelFilePath);
   if (!force && isSignatureMatch({ value: signature, source: { kind: 'path' } })) {
     logger.info('Excel refresh skipped (no change detected).');
@@ -116,6 +121,11 @@ const refreshFromConfiguredPath = async (force = false): Promise<void> => {
  * Refresh from a user-selected file with optional forced reload.
  */
 const refreshFromFile = async (file: File, force = false): Promise<void> => {
+  logger.debug('Refreshing Excel from user-selected file.', {
+    force,
+    fileName: file.name,
+    fileSize: file.size,
+  });
   const { data, signature } = await loadExcelFileWithSignature(file);
   if (!force && isSignatureMatch({ value: signature, source: { kind: 'file', file } })) {
     logger.info('Excel refresh skipped (no change detected for file).');
@@ -134,6 +144,9 @@ export const initializeRefresh = (): void => {
   if (refreshTimer !== null) {
     window.clearInterval(refreshTimer);
   }
+  logger.info('Initializing Excel auto-refresh timer.', {
+    intervalMs: appConfig.autoRefreshIntervalMs,
+  });
   refreshTimer = window.setInterval(() => {
     void runWithExclusiveLock(async () => {
       setRefreshButtonDisabled(true);
@@ -151,18 +164,28 @@ export const initializeRefresh = (): void => {
  */
 export const refreshNow = (fileOverride?: File): void => {
   if (refreshInProgress) {
+    logger.debug('Excel refresh skipped (refresh already in progress).');
     return;
   }
   renderExcelLoadingState();
   void runWithExclusiveLock(async () => {
     if (fileOverride) {
+      logger.info('Manual Excel refresh requested with file override.', {
+        fileName: fileOverride.name,
+        fileSize: fileOverride.size,
+      });
       await refreshFromFile(fileOverride, true);
       return;
     }
     if (lastSignature?.source.kind === 'file') {
+      logger.info('Manual Excel refresh requested for active file source.', {
+        fileName: lastSignature.source.file.name,
+        fileSize: lastSignature.source.file.size,
+      });
       await refreshFromFile(lastSignature.source.file, true);
       return;
     }
+    logger.info('Manual Excel refresh requested for configured path.');
     await refreshFromConfiguredPath(true);
   }).catch((error) => handleRefreshError(error, true));
 };
@@ -171,5 +194,9 @@ export const refreshNow = (fileOverride?: File): void => {
  * Mark a user-selected file as the active refresh source.
  */
 export const setActiveExcelFile = (file: File): void => {
+  logger.info('Excel file selected for refresh.', {
+    fileName: file.name,
+    fileSize: file.size,
+  });
   updateSignature({ value: `${file.lastModified}-${file.size}`, source: { kind: 'file', file } });
 };

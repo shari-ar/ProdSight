@@ -230,12 +230,22 @@ const bufferToHex = (buffer: ArrayBuffer): string => {
 /** Generate a stable SHA-256 signature for change detection. */
 const createBufferSignature = async (buffer: ArrayBuffer): Promise<string> => {
   const digest = await crypto.subtle.digest('SHA-256', buffer);
-  return bufferToHex(digest);
+  const signature = bufferToHex(digest);
+  logger.debug('Excel signature generated for configured path.', {
+    signature,
+  });
+  return signature;
 };
 
 /** Generate a lightweight signature for user-selected files. */
 const createFileSignature = (file: File): string => {
-  return `${file.lastModified}-${file.size}`;
+  const signature = `${file.lastModified}-${file.size}`;
+  logger.debug('Excel signature generated for uploaded file.', {
+    signature,
+    fileName: file.name,
+    fileSize: file.size,
+  });
+  return signature;
 };
 
 /** Public API for loading and parsing Excel data from a configured path. */

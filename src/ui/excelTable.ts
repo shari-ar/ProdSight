@@ -167,6 +167,7 @@ export const renderExcelLoadingState = (): void => {
 export const setRefreshButtonDisabled = (disabled: boolean): void => {
   const elements = getExcelTableElements();
   elements.refreshButton.disabled = disabled;
+  logger.debug('Excel refresh button state updated.', { disabled });
 };
 
 export const renderExcelErrorState = (message: string): void => {
