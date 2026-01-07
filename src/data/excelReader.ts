@@ -220,17 +220,20 @@ const parseWorkbook = (data: ArrayBuffer): ExcelData => {
   return { headers, dateHeader, rows };
 };
 
+/** Convert a buffer to a hex string for signature storage. */
 const bufferToHex = (buffer: ArrayBuffer): string => {
   return Array.from(new Uint8Array(buffer))
     .map((byte) => byte.toString(16).padStart(2, '0'))
     .join('');
 };
 
+/** Generate a stable SHA-256 signature for change detection. */
 const createBufferSignature = async (buffer: ArrayBuffer): Promise<string> => {
   const digest = await crypto.subtle.digest('SHA-256', buffer);
   return bufferToHex(digest);
 };
 
+/** Generate a lightweight signature for user-selected files. */
 const createFileSignature = (file: File): string => {
   return `${file.lastModified}-${file.size}`;
 };
@@ -242,6 +245,9 @@ export const loadExcelData = async (filePath: string): Promise<ExcelData> => {
   return parseWorkbook(buffer);
 };
 
+/**
+ * Load Excel data and return a content signature for change detection.
+ */
 export const loadExcelDataWithSignature = async (
   filePath: string,
 ): Promise<{ data: ExcelData; signature: string }> => {
@@ -268,6 +274,9 @@ export const loadExcelFile = async (file: File): Promise<ExcelData> => {
   }
 };
 
+/**
+ * Load Excel data from a file and return a signature for change detection.
+ */
 export const loadExcelFileWithSignature = async (
   file: File,
 ): Promise<{ data: ExcelData; signature: string }> => {

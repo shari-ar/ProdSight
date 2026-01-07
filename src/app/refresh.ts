@@ -8,20 +8,33 @@ import {
 } from '../ui/excelTable';
 import { logger } from '../utils/logger';
 
+/**
+ * Tracks whether refreshes should read from the configured path or a user-selected file.
+ */
 type RefreshSource =
   | { kind: 'path' }
   | { kind: 'file'; file: File };
 
+/**
+ * Captures the last-seen signature for change detection and refresh comparison.
+ */
 type RefreshSignature = {
   value: string;
   source: RefreshSource;
 };
 
+// Last observed file signature used to skip redundant reloads.
 let lastSignature: RefreshSignature | null = null;
+// Last error message to suppress duplicate auto-refresh errors.
 let lastErrorMessage: string | null = null;
+// Handle for the auto-refresh timer, if enabled.
 let refreshTimer: number | null = null;
+// Prevent overlapping refresh operations.
 let refreshInProgress = false;
 
+/**
+ * Serialize refresh operations so the UI and data stay consistent.
+ */
 const runWithExclusiveLock = async (task: () => Promise<void>): Promise<void> => {
   if (refreshInProgress) {
     return;
@@ -34,10 +47,16 @@ const runWithExclusiveLock = async (task: () => Promise<void>): Promise<void> =>
   }
 };
 
+/**
+ * Store the latest signature for subsequent change detection.
+ */
 const updateSignature = (signature: RefreshSignature): void => {
   lastSignature = signature;
 };
 
+/**
+ * Compare signatures, including source identity for uploaded files.
+ */
 const isSignatureMatch = (signature: RefreshSignature): boolean => {
   if (!lastSignature) {
     return false;
@@ -48,6 +67,9 @@ const isSignatureMatch = (signature: RefreshSignature): boolean => {
   return isSameSource && signature.value === lastSignature.value;
 };
 
+/**
+ * Suppress repeated error states during background auto-refresh retries.
+ */
 const shouldShowError = (message: string): boolean => {
   if (lastErrorMessage === message) {
     return false;
@@ -56,10 +78,16 @@ const shouldShowError = (message: string): boolean => {
   return true;
 };
 
+/**
+ * Reset error tracking once a refresh succeeds.
+ */
 const clearErrorState = (): void => {
   lastErrorMessage = null;
 };
 
+/**
+ * Apply user-facing error state and track error suppression state.
+ */
 const handleRefreshError = (error: unknown, forceRender = false): void => {
   const message = error instanceof Error ? error.message : 'بارگذاری فایل اکسل ناموفق بود.';
   logger.error('Excel refresh failed.', { error });
@@ -69,6 +97,9 @@ const handleRefreshError = (error: unknown, forceRender = false): void => {
   }
 };
 
+/**
+ * Refresh from the configured Excel path with optional forced reload.
+ */
 const refreshFromConfiguredPath = async (force = false): Promise<void> => {
   const { data, signature } = await loadExcelDataWithSignature(appConfig.excelFilePath);
   if (!force && isSignatureMatch({ value: signature, source: { kind: 'path' } })) {
@@ -81,6 +112,9 @@ const refreshFromConfiguredPath = async (force = false): Promise<void> => {
   renderExcelTable(data);
 };
 
+/**
+ * Refresh from a user-selected file with optional forced reload.
+ */
 const refreshFromFile = async (file: File, force = false): Promise<void> => {
   const { data, signature } = await loadExcelFileWithSignature(file);
   if (!force && isSignatureMatch({ value: signature, source: { kind: 'file', file } })) {
@@ -93,6 +127,9 @@ const refreshFromFile = async (file: File, force = false): Promise<void> => {
   renderExcelTable(data);
 };
 
+/**
+ * Start or restart the auto-refresh timer.
+ */
 export const initializeRefresh = (): void => {
   if (refreshTimer !== null) {
     window.clearInterval(refreshTimer);
@@ -109,6 +146,9 @@ export const initializeRefresh = (): void => {
   }, appConfig.autoRefreshIntervalMs);
 };
 
+/**
+ * Trigger an immediate refresh, optionally overriding the active file source.
+ */
 export const refreshNow = (fileOverride?: File): void => {
   if (refreshInProgress) {
     return;
@@ -127,6 +167,9 @@ export const refreshNow = (fileOverride?: File): void => {
   }).catch((error) => handleRefreshError(error, true));
 };
 
+/**
+ * Mark a user-selected file as the active refresh source.
+ */
 export const setActiveExcelFile = (file: File): void => {
   updateSignature({ value: `${file.lastModified}-${file.size}`, source: { kind: 'file', file } });
 };

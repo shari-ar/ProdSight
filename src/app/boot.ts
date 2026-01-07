@@ -22,6 +22,9 @@ export const boot = (): void => {
   initializeRefresh();
 };
 
+/**
+ * Wire the manual file picker to load Excel data via the refresh pipeline.
+ */
 const setupExcelBrowse = (): void => {
   const browseButton = document.getElementById('excel-browse');
   const fileInput = document.getElementById('excel-file-input');
@@ -48,6 +51,9 @@ const setupExcelBrowse = (): void => {
   });
 };
 
+/**
+ * Manual refresh triggers a full reload for a clean file:// reset.
+ */
 const setupManualRefresh = (): void => {
   const refreshButton = document.getElementById('excel-refresh');
   if (!(refreshButton instanceof HTMLButtonElement)) {

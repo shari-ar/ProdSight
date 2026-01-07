@@ -161,6 +161,9 @@ export const renderExcelLoadingState = (): void => {
   elements.tableWrapper.innerHTML = '';
 };
 
+/**
+ * Toggle the manual refresh button to prevent concurrent reads.
+ */
 export const setRefreshButtonDisabled = (disabled: boolean): void => {
   const elements = getExcelTableElements();
   elements.refreshButton.disabled = disabled;
