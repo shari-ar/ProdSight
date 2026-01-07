@@ -220,11 +220,35 @@ const parseWorkbook = (data: ArrayBuffer): ExcelData => {
   return { headers, dateHeader, rows };
 };
 
+const bufferToHex = (buffer: ArrayBuffer): string => {
+  return Array.from(new Uint8Array(buffer))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+};
+
+const createBufferSignature = async (buffer: ArrayBuffer): Promise<string> => {
+  const digest = await crypto.subtle.digest('SHA-256', buffer);
+  return bufferToHex(digest);
+};
+
+const createFileSignature = (file: File): string => {
+  return `${file.lastModified}-${file.size}`;
+};
+
 /** Public API for loading and parsing Excel data from a configured path. */
 export const loadExcelData = async (filePath: string): Promise<ExcelData> => {
   logger.debug('Loading Excel data.', { filePath });
   const buffer = await fetchExcelArrayBuffer(filePath);
   return parseWorkbook(buffer);
+};
+
+export const loadExcelDataWithSignature = async (
+  filePath: string,
+): Promise<{ data: ExcelData; signature: string }> => {
+  logger.debug('Loading Excel data with signature.', { filePath });
+  const buffer = await fetchExcelArrayBuffer(filePath);
+  const signature = await createBufferSignature(buffer);
+  return { data: parseWorkbook(buffer), signature };
 };
 
 /** Public API for loading and parsing Excel data from a user-selected file. */
@@ -236,6 +260,24 @@ export const loadExcelFile = async (file: File): Promise<ExcelData> => {
   try {
     const buffer = await file.arrayBuffer();
     return parseWorkbook(buffer);
+  } catch (error) {
+    if (error instanceof ExcelDataError) {
+      throw error;
+    }
+    throw new ExcelDataError('بارگذاری فایل اکسل با خطا مواجه شد.');
+  }
+};
+
+export const loadExcelFileWithSignature = async (
+  file: File,
+): Promise<{ data: ExcelData; signature: string }> => {
+  logger.debug('Loading Excel data from uploaded file with signature.', {
+    fileName: file.name,
+    fileSize: file.size,
+  });
+  try {
+    const buffer = await file.arrayBuffer();
+    return { data: parseWorkbook(buffer), signature: createFileSignature(file) };
   } catch (error) {
     if (error instanceof ExcelDataError) {
       throw error;

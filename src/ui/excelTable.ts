@@ -161,6 +161,11 @@ export const renderExcelLoadingState = (): void => {
   elements.tableWrapper.innerHTML = '';
 };
 
+export const setRefreshButtonDisabled = (disabled: boolean): void => {
+  const elements = getExcelTableElements();
+  elements.refreshButton.disabled = disabled;
+};
+
 export const renderExcelErrorState = (message: string): void => {
   const elements = getExcelTableElements();
   logger.warn('Rendering Excel error state.', { message });
