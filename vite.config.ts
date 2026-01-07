@@ -13,5 +13,15 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     target: 'es2020',
+    minify: 'esbuild',
+    cssMinify: 'esbuild',
+    esbuild: {
+      legalComments: 'none',
+    },
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'es2020',
+    },
   },
 });
