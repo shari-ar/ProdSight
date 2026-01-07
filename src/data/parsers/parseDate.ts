@@ -50,6 +50,7 @@ const buildJalaaliDate = (year: number, month: number, day: number): Date | null
  * year looks Persian or the Gregorian build fails to validate.
  */
 const buildBestDate = (year: number, month: number, day: number): Date | null => {
+  // Treat valid Gregorian dates as authoritative unless the year strongly suggests Jalali.
   const gregorianDate = buildDate(year, month, day);
   if (gregorianDate && !isLikelyJalaaliYear(year)) {
     return gregorianDate;
