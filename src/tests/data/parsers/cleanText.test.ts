@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { cleanText } from '../../../data/parsers/cleanText';
 
+// Ensure text cleanup handles whitespace and invisible characters.
 describe('cleanText', () => {
   it('removes invisible characters and trims whitespace', () => {
     const value = '  hello\u200c   world\ufeff  ';

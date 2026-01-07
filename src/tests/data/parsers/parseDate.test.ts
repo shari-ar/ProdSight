@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { parseDate } from '../../../data/parsers/parseDate';
 
+// Confirm date parsing behavior for supported input formats.
 const toParts = (date: Date | null): string | null => {
   if (!date) {
     return null;

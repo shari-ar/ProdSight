@@ -1,3 +1,4 @@
+# Run Vitest in CI and publish coverage artifacts for review.
 name: CI Tests
 
 on:
@@ -15,21 +16,26 @@ jobs:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
+      # Fetch the repository so tests run against the current commit.
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Align runtime with local development and lockfile expectations.
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '25.x'
           cache: 'npm'
 
+      # Use a clean, deterministic install based on package-lock.json.
       - name: Install dependencies
         run: npm ci
 
+      # Execute the CI-optimized Vitest run with coverage enabled.
       - name: Run unit tests with coverage
         run: npm run test:ci
 
+      # Archive coverage reports for inspection and downstream tooling.
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
