@@ -1,23 +1,30 @@
 // Centralized test logging hooks to make CI output more diagnostic.
-import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
+import { afterAll, afterEach, beforeAll } from 'vitest';
 
-const log = (message: string): void => {
+const logInfo = (message: string): void => {
   console.info(`[Vitest] ${message}`);
 };
 
-beforeAll(() => {
-  log('Test suite started.');
-});
+const logError = (message: string): void => {
+  console.error(`[Vitest] ${message}`);
+};
 
-beforeEach((context) => {
-  log(`Starting: ${context.task.name}`);
+let suiteStartedAt = 0;
+
+beforeAll(() => {
+  suiteStartedAt = Date.now();
+  logInfo('Test suite started.');
 });
 
 afterEach((context) => {
   const status = context.task.result?.state ?? 'unknown';
-  log(`Finished: ${context.task.name} (${status}).`);
+  if (status === 'fail') {
+    const errorMessage = context.task.result?.errors?.[0]?.message ?? 'Unknown error';
+    logError(`Failed: ${context.task.name} (${errorMessage}).`);
+  }
 });
 
 afterAll(() => {
-  log('Test suite finished.');
+  const durationMs = suiteStartedAt ? Date.now() - suiteStartedAt : 0;
+  logInfo(`Test suite finished in ${durationMs}ms.`);
 });

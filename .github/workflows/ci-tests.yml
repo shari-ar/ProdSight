@@ -41,7 +41,11 @@ jobs:
 
       # Execute the CI-optimized Vitest run with coverage enabled.
       - name: Run unit tests with coverage
-        run: npm run test:ci
+        run: |
+          set -euo pipefail
+          echo "::group::Vitest run"
+          npm run test:ci
+          echo "::endgroup::"
 
       # Archive coverage reports for inspection and downstream tooling.
       - name: Upload coverage artifact
