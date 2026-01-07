@@ -1,5 +1,6 @@
 import { isValidJalaaliDate, toGregorian } from 'jalaali-js';
 import * as XLSX from 'xlsx';
+import { logger } from '../../utils/logger';
 import { cleanText } from './cleanText';
 import { normalizeDigits } from './digits';
 
@@ -57,7 +58,16 @@ const buildBestDate = (year: number, month: number, day: number): Date | null =>
   }
 
   const jalaliDate = buildJalaaliDate(year, month, day);
-  return jalaliDate ?? gregorianDate;
+  if (jalaliDate) {
+    logger.debug('Interpreted date as Jalali and converted to Gregorian.', {
+      year,
+      month,
+      day,
+    });
+    return jalaliDate;
+  }
+
+  return gregorianDate;
 };
 
 /** Parse YYYY-MM-DD, DD/MM/YYYY, or MM/DD/YYYY formatted date parts. */
