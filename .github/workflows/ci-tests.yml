@@ -1,0 +1,66 @@
+# Run Vitest in CI and publish coverage artifacts for review.
+# This workflow is scoped to tests and is intentionally separated from build/release jobs.
+name: CI Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      # Fetch the repository so tests run against the current commit.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Align runtime with local development and lockfile expectations.
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '25.x'
+          cache: 'npm'
+
+      # Use a clean, deterministic install based on package-lock.json.
+      - name: Install dependencies
+        run: npm ci
+
+      # Log runtime versions for easier debugging of CI failures.
+      - name: Log runtime versions
+        run: |
+          node --version
+          npm --version
+          npx vitest --version
+
+      # Execute the CI-optimized Vitest run with coverage enabled.
+      - name: Run unit tests with coverage
+        run: |
+          set -euo pipefail
+          echo "::group::Vitest run"
+          npm run test:ci
+          echo "::endgroup::"
+
+      # Archive coverage reports for inspection and downstream tooling.
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vitest-coverage-${{ github.run_number }}
+          if-no-files-found: error
+          retention-days: 14
+          path: coverage
+
+      # Upload test reports (e.g., JUnit XML) for integration with CI tooling.
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: vitest-reports-${{ github.run_number }}
+          if-no-files-found: error
+          retention-days: 14
+          path: reports

@@ -8,8 +8,9 @@
     "dev": "vite",
     "preview": "vite preview",
     "lint:env": "bash scripts/validate-env.sh",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "vitest run --config vitest.config.ts",
+    "test:watch": "vitest --config vitest.config.ts",
+    "test:ci": "vitest run --config vitest.config.ts --coverage"
   },
   "dependencies": {
     "dotenv": "17.2.3",
@@ -20,6 +21,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "25.0.3",
+    "@vitest/coverage-v8": "4.0.16",
     "autoprefixer": "^10.4.21",
     "esbuild": "0.27.2",
     "postcss": "^8.5.6",

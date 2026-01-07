@@ -1,6 +1,8 @@
+// Unit tests for environment schema validation.
 import { describe, expect, it } from 'vitest';
-import { envSchema } from './schema';
+import { envSchema } from '../../config/schema';
 
+// Validate environment schema parsing and rejection behavior.
 describe('envSchema', () => {
   it('accepts a complete configuration', () => {
     const result = envSchema.safeParse({

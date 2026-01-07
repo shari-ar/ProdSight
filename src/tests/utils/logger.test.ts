@@ -1,6 +1,8 @@
+// Unit tests for the logging utility.
 import { describe, expect, it, vi } from 'vitest';
-import { logger } from './logger';
+import { logger } from '../../utils/logger';
 
+// Ensure the logger forwards messages to the correct console methods.
 describe('logger', () => {
   it('routes debug logs to console.debug with prefix', () => {
     const spy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);

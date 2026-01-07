@@ -1,6 +1,8 @@
+// Unit tests for numeric parsing helpers.
 import { describe, expect, it } from 'vitest';
-import { parseNumber } from './parseNumber';
+import { parseNumber } from '../../../data/parsers/parseNumber';
 
+// Validate numeric parsing across localized formats and edge cases.
 describe('parseNumber', () => {
   it('parses Persian digits with separators', () => {
     expect(parseNumber('۱٬۲۳۴٫۵۰')).toBe(1234.5);

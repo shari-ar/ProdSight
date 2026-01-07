@@ -1,8 +1,8 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
 import { loadConfig } from './src/config/env';
 
-export default defineConfig(({ mode }) => {
-  const appConfig = mode === 'test' ? null : loadConfig();
+export default defineConfig(() => {
+  const appConfig = loadConfig();
 
   return {
     base: './',
@@ -23,11 +23,6 @@ export default defineConfig(({ mode }) => {
       esbuildOptions: {
         target: 'es2020',
       },
-    },
-    test: {
-      environment: 'node',
-      include: ['src/**/*.test.ts'],
-      restoreMocks: true,
     },
   };
 });

@@ -1,6 +1,8 @@
+// Unit tests for digit normalization helpers.
 import { describe, expect, it } from 'vitest';
-import { normalizeDigits } from './digits';
+import { normalizeDigits } from '../../../data/parsers/digits';
 
+// Verify digit normalization across supported numeral systems.
 describe('normalizeDigits', () => {
   it('converts Persian digits to ASCII', () => {
     expect(normalizeDigits('۱۲۳۴۵۶۷۸۹۰')).toBe('1234567890');
