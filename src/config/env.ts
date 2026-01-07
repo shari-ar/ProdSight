@@ -7,6 +7,13 @@ import type { AppConfig } from './types';
 
 // Source filename used for build-time configuration.
 const ENV_FILENAME = '.env';
+const REQUIRED_ENV_KEYS = [
+  'PAGE_TITLE',
+  'COMPANY_LOGO_ASSET_PATH',
+  'EXCEL_FILE_PATH',
+  'ROWS_PER_PAGE',
+  'AUTO_REFRESH_INTERVAL_MS',
+] as const;
 
 // Normalize Zod validation issues into a readable multiline string.
 const formatZodError = (error: ZodError): string =>
@@ -24,6 +31,17 @@ export const loadConfig = (): AppConfig => {
 
   const rawEnv = fs.readFileSync(envPath, { encoding: 'utf8' });
   const parsedEnv = dotenv.parse(rawEnv);
+  const parsedKeys = Object.keys(parsedEnv);
+  const missingKeys = REQUIRED_ENV_KEYS.filter((key) => !parsedKeys.includes(key));
+  const extraKeys = parsedKeys.filter((key) => !REQUIRED_ENV_KEYS.includes(key as (typeof REQUIRED_ENV_KEYS)[number]));
+
+  if (missingKeys.length > 0 || extraKeys.length > 0) {
+    const missingMessage =
+      missingKeys.length > 0 ? `Missing required keys: ${missingKeys.join(', ')}.` : '';
+    const extraMessage = extraKeys.length > 0 ? `Extra keys are not allowed: ${extraKeys.join(', ')}.` : '';
+    const message = [missingMessage, extraMessage].filter(Boolean).join('\n');
+    throw new Error(`Invalid ${ENV_FILENAME} configuration:\n${message}`);
+  }
   const result = envSchema.safeParse(parsedEnv);
 
   if (!result.success) {
