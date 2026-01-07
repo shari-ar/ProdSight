@@ -1,3 +1,4 @@
+// Unit tests for digit normalization helpers.
 import { describe, expect, it } from 'vitest';
 import { normalizeDigits } from '../../../data/parsers/digits';
 

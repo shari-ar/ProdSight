@@ -1,4 +1,5 @@
 # Run Vitest in CI and publish coverage artifacts for review.
+# This workflow is scoped to tests and is intentionally separated from build/release jobs.
 name: CI Tests
 
 on:

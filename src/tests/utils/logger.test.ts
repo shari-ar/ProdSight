@@ -1,3 +1,4 @@
+// Unit tests for the logging utility.
 import { describe, expect, it, vi } from 'vitest';
 import { logger } from '../../utils/logger';
 

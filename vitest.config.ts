@@ -1,3 +1,6 @@
+/**
+ * Vitest configuration aligned with the project's Node-based test environment.
+ */
 import { defineConfig } from 'vitest/config';
 import type { AppConfig } from './src/config/types';
 

@@ -1,3 +1,4 @@
+// Unit tests for numeric parsing helpers.
 import { describe, expect, it } from 'vitest';
 import { parseNumber } from '../../../data/parsers/parseNumber';
 

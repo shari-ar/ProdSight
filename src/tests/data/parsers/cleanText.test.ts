@@ -1,3 +1,4 @@
+// Unit tests for text normalization helpers.
 import { describe, expect, it } from 'vitest';
 import { cleanText } from '../../../data/parsers/cleanText';
 

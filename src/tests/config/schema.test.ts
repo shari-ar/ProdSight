@@ -1,3 +1,4 @@
+// Unit tests for environment schema validation.
 import { describe, expect, it } from 'vitest';
 import { envSchema } from '../../config/schema';
 
