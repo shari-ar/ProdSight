@@ -110,7 +110,8 @@ const buildTable = (data: ExcelData): HTMLTableElement => {
   const headerRow = document.createElement('tr');
   data.headers.forEach((header) => {
     const th = document.createElement('th');
-    th.className = 'sticky top-0 z-10 bg-slate-100 px-4 py-3 text-right font-semibold text-slate-700';
+    th.className =
+      'sticky top-0 z-10 bg-slate-100 px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-600';
     th.textContent = header;
     headerRow.appendChild(th);
   });
@@ -137,9 +138,7 @@ const buildBodyRow = (
   isLatest: boolean,
 ): HTMLTableRowElement => {
   const tr = document.createElement('tr');
-  tr.className = isLatest
-    ? 'border-r-4 border-amber-400 bg-amber-50 font-semibold'
-    : 'even:bg-slate-50';
+  tr.className = isLatest ? 'border-r-4 border-amber-400 bg-amber-50 font-semibold' : 'even:bg-slate-50';
   headers.forEach((header) => {
     const td = document.createElement('td');
     td.className = 'border-b border-slate-100 px-4 py-3 text-right';
@@ -154,7 +153,7 @@ const buildBodyRow = (
       dateSpan.textContent = value;
 
       const badge = document.createElement('span');
-      badge.className = 'rounded-full bg-amber-400 px-2 py-0.5 text-xs font-bold text-amber-900';
+      badge.className = 'rounded-full bg-amber-400 px-2 py-0.5 text-[11px] font-semibold text-amber-900';
       badge.textContent = 'واپَسین';
 
       wrapper.appendChild(dateSpan);

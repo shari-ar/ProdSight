@@ -14,14 +14,14 @@ export const layout = (): string => {
 
   // Return the full RTL layout as a single HTML template string.
   return `
-  <main class="mx-auto flex min-h-full w-full max-w-[1200px] flex-col gap-7 px-4 pb-12 pt-8 sm:px-6 lg:px-12">
-    <header class="grid items-center gap-5 rounded-[20px] border border-indigo-100/70 bg-gradient-to-br from-white via-slate-50 to-indigo-50 px-6 py-5 shadow-[0_18px_40px_rgba(24,37,79,0.12)] sm:grid-cols-[auto_1fr]">
-      <div class="grid h-[72px] w-[72px] place-items-center rounded-[18px] border border-indigo-200/60 bg-gradient-to-br from-indigo-50 to-white" role="img" aria-label="لوگو"></div>
-      <h1 class="text-[clamp(22px,3vw,30px)] font-bold text-slate-900">${appConfig.pageTitle}</h1>
+  <main class="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-7 px-4 pb-12 pt-8 sm:px-6 lg:px-8">
+    <header class="grid items-center gap-5 rounded-2xl border border-indigo-100/70 bg-gradient-to-br from-white via-slate-50 to-indigo-50 px-6 py-5 shadow-xl sm:grid-cols-[auto_1fr]">
+      <div class="grid h-16 w-16 place-items-center rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-indigo-50 to-white" role="img" aria-label="لوگو"></div>
+      <h1 class="text-balance text-2xl font-bold text-slate-900 sm:text-[clamp(22px,3vw,30px)]">${appConfig.pageTitle}</h1>
     </header>
 
     <!-- Primary data visualization card -->
-    <section class="w-full rounded-[18px] border border-slate-200/70 bg-white p-6 shadow-[0_16px_36px_rgba(31,42,68,0.1)]">
+    <section class="w-full rounded-2xl border border-slate-200/70 bg-white p-6 shadow-lg">
       <!-- Empty-state placeholder (toggled by the render pipeline) -->
       <div
         id="excel-empty"
@@ -32,17 +32,17 @@ export const layout = (): string => {
       </div>
       <div
         id="excel-table"
-        class="overflow-x-auto rounded-[14px] border border-slate-200 bg-white shadow-inner"
+        class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-inner"
         hidden
       ></div>
     </section>
 
     <!-- Footer status and action controls -->
     <section
-      class="w-full rounded-[18px] border border-slate-200/70 border-t-indigo-200/70 bg-gradient-to-br from-white to-slate-50 p-6 shadow-[0_16px_36px_rgba(31,42,68,0.1)]"
+      class="w-full rounded-2xl border border-slate-200/70 border-t-indigo-200/70 bg-gradient-to-br from-white to-slate-50 p-6 shadow-lg"
       aria-live="polite"
     >
-      <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+      <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-6">
         <div class="flex flex-col gap-2">
           <div class="flex flex-col gap-0.5">
             <span class="text-xs font-semibold text-slate-500">آخرین بروزرسانی</span>
@@ -58,7 +58,7 @@ export const layout = (): string => {
         <div class="flex flex-wrap gap-3">
           <button
             id="excel-refresh"
-            class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-[0_6px_12px_rgba(31,42,68,0.08)] transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-300 disabled:cursor-not-allowed disabled:opacity-60"
+            class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-300 disabled:cursor-not-allowed disabled:opacity-60"
             type="button"
             disabled
           >
@@ -66,7 +66,7 @@ export const layout = (): string => {
           </button>
           <button
             id="excel-browse"
-            class="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_16px_rgba(63,92,232,0.25)] transition hover:from-indigo-600 hover:to-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-300"
+            class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-300"
             type="button"
           >
             انتخاب فایل اکسل
