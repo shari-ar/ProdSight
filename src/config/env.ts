@@ -3,6 +3,7 @@ import path from 'node:path';
 import dotenv from 'dotenv';
 import { ZodError } from 'zod';
 import { envSchema } from './schema';
+import { AppError, ERROR_CODES } from '../data/errors';
 import type { AppConfig } from './types';
 
 // Source filename used for build-time configuration.
@@ -26,7 +27,10 @@ export const loadConfig = (): AppConfig => {
   const envPath = path.resolve(process.cwd(), ENV_FILENAME);
 
   if (!fs.existsSync(envPath)) {
-    throw new Error(`Missing ${ENV_FILENAME} file. Build requires all five configuration values.`);
+    throw new AppError({
+      code: ERROR_CODES.ConfigMissingEnv,
+      message: `فایل ${ENV_FILENAME} یافت نشد. پیکربندی شامل هر پنج مقدار الزامی است.`,
+    });
   }
 
   const rawEnv = fs.readFileSync(envPath, { encoding: 'utf8' });
@@ -37,21 +41,31 @@ export const loadConfig = (): AppConfig => {
 
   if (missingKeys.length > 0 || extraKeys.length > 0) {
     const missingMessage =
-      missingKeys.length > 0 ? `Missing required keys: ${missingKeys.join(', ')}.` : '';
-    const extraMessage = extraKeys.length > 0 ? `Extra keys are not allowed: ${extraKeys.join(', ')}.` : '';
+      missingKeys.length > 0 ? `کلیدهای الزامی موجود نیستند: ${missingKeys.join(', ')}.` : '';
+    const extraMessage =
+      extraKeys.length > 0 ? `کلیدهای اضافی مجاز نیستند: ${extraKeys.join(', ')}.` : '';
     const message = [missingMessage, extraMessage].filter(Boolean).join('\n');
-    throw new Error(`Invalid ${ENV_FILENAME} configuration:\n${message}`);
+    throw new AppError({
+      code: ERROR_CODES.ConfigInvalidKeys,
+      message: `پیکربندی ${ENV_FILENAME} نامعتبر است:\n${message}`,
+    });
   }
   const result = envSchema.safeParse(parsedEnv);
 
   if (!result.success) {
     const message = formatZodError(result.error);
-    throw new Error(`Invalid ${ENV_FILENAME} configuration:\n${message}`);
+    throw new AppError({
+      code: ERROR_CODES.ConfigInvalidSchema,
+      message: `پیکربندی ${ENV_FILENAME} نامعتبر است:\n${message}`,
+    });
   }
 
   const logoAssetPath = path.resolve(process.cwd(), result.data.COMPANY_LOGO_ASSET_PATH);
   if (!fs.existsSync(logoAssetPath)) {
-    throw new Error(`Missing company logo asset at ${logoAssetPath}.`);
+    throw new AppError({
+      code: ERROR_CODES.ConfigLogoMissing,
+      message: `فایل لوگوی شرکت در مسیر ${logoAssetPath} یافت نشد.`,
+    });
   }
 
   const companyLogoSvg = fs.readFileSync(logoAssetPath, { encoding: 'utf8' });

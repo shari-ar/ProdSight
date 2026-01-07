@@ -180,7 +180,7 @@ const fetchExcelArrayBuffer = async (filePath: string): Promise<ArrayBuffer> => 
     if (error instanceof ExcelDataError) {
       throw error;
     }
-    throw new ExcelDataError('بارگذاری فایل اکسل با خطا مواجه شد.');
+    throw new ExcelDataError('بارگذاری فایل اکسل با خطا مواجه شد.', error);
   }
 };
 
@@ -280,7 +280,7 @@ export const loadExcelFile = async (file: File): Promise<ExcelData> => {
     if (error instanceof ExcelDataError) {
       throw error;
     }
-    throw new ExcelDataError('بارگذاری فایل اکسل با خطا مواجه شد.');
+    throw new ExcelDataError('بارگذاری فایل اکسل با خطا مواجه شد.', error);
   }
 };
 
@@ -301,6 +301,6 @@ export const loadExcelFileWithSignature = async (
     if (error instanceof ExcelDataError) {
       throw error;
     }
-    throw new ExcelDataError('بارگذاری فایل اکسل با خطا مواجه شد.');
+    throw new ExcelDataError('بارگذاری فایل اکسل با خطا مواجه شد.', error);
   }
 };
