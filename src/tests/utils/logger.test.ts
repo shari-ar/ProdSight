@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { logger } from './logger';
+import { logger } from '../../utils/logger';
 
 describe('logger', () => {
   it('routes debug logs to console.debug with prefix', () => {

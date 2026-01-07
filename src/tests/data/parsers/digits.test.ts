@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeDigits } from './digits';
+import { normalizeDigits } from '../../../data/parsers/digits';
 
 describe('normalizeDigits', () => {
   it('converts Persian digits to ASCII', () => {

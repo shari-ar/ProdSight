@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { envSchema } from './schema';
+import { envSchema } from '../../config/schema';
 
 describe('envSchema', () => {
   it('accepts a complete configuration', () => {

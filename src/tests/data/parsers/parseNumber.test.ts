@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseNumber } from './parseNumber';
+import { parseNumber } from '../../../data/parsers/parseNumber';
 
 describe('parseNumber', () => {
   it('parses Persian digits with separators', () => {

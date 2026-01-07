@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cleanText } from './cleanText';
+import { cleanText } from '../../../data/parsers/cleanText';
 
 describe('cleanText', () => {
   it('removes invisible characters and trims whitespace', () => {

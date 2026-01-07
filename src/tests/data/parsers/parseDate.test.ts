@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseDate } from './parseDate';
+import { parseDate } from '../../../data/parsers/parseDate';
 
 const toParts = (date: Date | null): string | null => {
   if (!date) {
