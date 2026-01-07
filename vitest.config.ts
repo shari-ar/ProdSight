@@ -24,8 +24,12 @@ export default defineConfig({
     environment: 'node',
     include: ['src/tests/**/*.test.ts'],
     exclude: ['node_modules', 'dist', 'coverage'],
+    reporters: ['default', 'junit'],
     restoreMocks: true,
     setupFiles: ['src/tests/setup.ts'],
+    outputFile: {
+      junit: 'reports/vitest-junit.xml',
+    },
   },
   coverage: {
     // Collect coverage for source files while excluding tests and generated artifacts.

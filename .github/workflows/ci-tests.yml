@@ -55,3 +55,12 @@ jobs:
           if-no-files-found: error
           retention-days: 14
           path: coverage
+
+      # Upload test reports (e.g., JUnit XML) for integration with CI tooling.
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: vitest-reports-${{ github.run_number }}
+          if-no-files-found: error
+          retention-days: 14
+          path: reports
