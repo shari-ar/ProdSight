@@ -127,7 +127,7 @@ const buildTable = (data: ExcelData): HTMLTableElement => {
   data.headers.forEach((header) => {
     const th = document.createElement('th');
     th.className =
-      'sticky top-0 z-10 bg-slate-100 px-4 py-3 text-right text-xs font-semibold text-slate-600';
+      'sticky top-0 z-10 border-b border-slate-200 bg-slate-100 px-4 py-3 text-right text-xs font-semibold text-slate-600';
     th.textContent = header;
     headerRow.appendChild(th);
   });
@@ -224,7 +224,7 @@ export const renderExcelErrorState = (message: string): void => {
   elements.refreshButton.disabled = false;
   elements.emptyState.hidden = true;
   elements.errorCard.hidden = false;
-  elements.errorMessage.textContent = message;
+  elements.errorMessage.textContent = message || 'خطای نامشخص رخ داده است.';
   elements.tableWrapper.hidden = true;
   elements.tableWrapper.innerHTML = '';
 };

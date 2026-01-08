@@ -19,7 +19,7 @@ export const layout = (): string => {
     <!-- Branded header card -->
     <header class="grid items-center gap-5 rounded-2xl border border-indigo-100/70 bg-gradient-to-br from-white via-slate-50 to-indigo-50 px-6 py-5 shadow-xl sm:grid-cols-[auto_1fr]">
       <div
-        class="logo grid h-16 w-16 place-items-center rounded-2xl border border-indigo-200/60 bg-white shadow-sm"
+        class="logo grid h-16 w-16 place-items-center rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-white to-indigo-50 shadow-sm"
         role="img"
         aria-label="لوگو"
       ></div>
@@ -32,10 +32,12 @@ export const layout = (): string => {
       <div
         id="excel-error"
         class="mb-4 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700 shadow-sm"
+        role="alert"
+        aria-live="assertive"
         hidden
       >
         <p class="text-sm font-semibold text-red-800">بروز خطا در دریافت اطلاعات</p>
-        <p id="excel-error-message" class="mt-1 text-sm text-red-700"></p>
+        <p id="excel-error-message" class="mt-1 text-sm leading-relaxed text-red-700"></p>
       </div>
       <!-- Empty-state placeholder (toggled by the render pipeline) -->
       <div
