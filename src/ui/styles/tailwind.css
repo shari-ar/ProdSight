@@ -18,8 +18,8 @@
   body {
     margin: 0;
     font-family: "Vazirmatn", "IRANSansX", "Shabnam", "Tahoma", sans-serif;
-    background: radial-gradient(circle at top, #f7f9fd 0%, #eef1f6 45%, #e6eaf2 100%);
-    color: #1f2a44;
+    background: radial-gradient(circle at top, #fff5f5 0%, #fee2e2 45%, #fecaca 100%);
+    color: #3b0a0a;
     line-height: 1.6;
     direction: rtl;
   }
