@@ -18,12 +18,27 @@ export const layout = (): string => {
   <main class="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-7 px-4 pb-12 pt-8 sm:px-6 lg:px-8">
     <!-- Branded header card -->
     <header class="grid items-center gap-5 rounded-2xl border border-indigo-100/70 bg-gradient-to-br from-white via-slate-50 to-indigo-50 px-6 py-5 shadow-xl sm:grid-cols-[auto_1fr]">
-      <div class="grid h-16 w-16 place-items-center rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-indigo-50 to-white" role="img" aria-label="لوگو"></div>
+      <div
+        class="logo grid h-16 w-16 place-items-center rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-white to-indigo-50 shadow-sm"
+        role="img"
+        aria-label="لوگو"
+      ></div>
       <h1 class="text-balance text-2xl font-bold text-slate-900 sm:text-[clamp(22px,3vw,30px)]">${appConfig.pageTitle}</h1>
     </header>
 
     <!-- Primary data visualization card -->
     <section class="w-full rounded-2xl border border-slate-200/70 bg-white p-6 shadow-lg">
+      <!-- Error-state card (shown on critical failures) -->
+      <div
+        id="excel-error"
+        class="mb-4 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700 shadow-sm"
+        role="alert"
+        aria-live="assertive"
+        hidden
+      >
+        <p class="text-sm font-semibold text-red-800">بروز خطا در دریافت اطلاعات</p>
+        <p id="excel-error-message" class="mt-1 text-sm leading-relaxed text-red-700"></p>
+      </div>
       <!-- Empty-state placeholder (toggled by the render pipeline) -->
       <div
         id="excel-empty"
