@@ -1,7 +1,5 @@
 /* Tailwind layers: base styles, component overrides, and utilities. */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* Global RTL defaults and shared typography tokens. */
 @layer base {
